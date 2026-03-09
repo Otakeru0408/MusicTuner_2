@@ -4,6 +4,7 @@
 #include "ACharacterBase.h"
 
 // Sets default values
+//コンストラクタ
 AACharacterBase::AACharacterBase()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -40,3 +41,6 @@ void AACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 }
 
+FVector AACharacterBase::GetEnemyForwardVector() const {
+	return RootComponent->GetForwardVector();
+}
