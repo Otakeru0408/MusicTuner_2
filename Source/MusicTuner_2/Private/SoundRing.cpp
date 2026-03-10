@@ -44,6 +44,10 @@ void ASoundRing::BeginPlay()
 
 		Disc->SetMaterial(0, DynamicMaterialInst);
 	}
+
+	for (int i = 0; i < RingNum; i++) {
+		//SpawnActorFromClass‚ÍŽv‚Á‚½‚æ‚è‚à‚ß‚ñ‚Ç‚­‚³‚»‚¤
+	}
 }
 
 // Called every frame

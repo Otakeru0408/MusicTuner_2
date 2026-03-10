@@ -28,5 +28,21 @@ void AEnemyTarget::Tick(float DeltaTime)
 	FVector forward = Sphere->GetForwardVector();
 	FVector NextPos = forward * Speed + GetActorLocation();
 	SetActorLocation(NextPos);
+
+	//プレイヤーに一定期間でダメージを与え続けるための変数
+	if (DamageTime > 0) {
+		DamageTime -= DeltaTime;
+	}
+
+	//Parentから一定範囲内はダメージを与えられないようにするが、そこを超えたらダメージできるようにする
+	if (CulcDistanceToParent() >= NoDamageRange) {
+		//Sphere->SetMaterial()
+	}
 }
 
+float AEnemyTarget::CulcDistanceToParent() {
+	if (!ParentActor)return 0.0f;
+
+	FVector VectorToParent = ParentActor->GetActorLocation() - GetActorLocation();
+	return VectorToParent.Length();
+}

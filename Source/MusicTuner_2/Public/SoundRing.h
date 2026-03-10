@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "EnemyBall.h"
 #include "SoundRing.generated.h"
 
 UCLASS()
@@ -40,6 +41,10 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Materials")
 	float RingSpeed;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Objects")
+	TArray<FEnemyBall> enemyBalls;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
