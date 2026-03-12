@@ -22,9 +22,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	//EnemyTargetを生成する関数
-	void GenerateEnemyTarget(float deg);
+	AActor* GenerateEnemyTarget(float deg, float length);
 
 	void SetEnemyTargetPos();
+	void SetSoundRingRotation();
 
 	//あるベクトルを中心としてベースとなるベクトルを回転させたときのベクトルを計算する
 	FVector RotateInAxis(FVector AxisVec, FVector BaseVec, float Deg);
@@ -38,6 +39,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Materials")
 	int BPM;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Materials")
+	int RingDivideNum;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Materials")
 	int RingNum;
@@ -56,6 +60,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 	TSubclassOf<AActor> ActorClassToSpawn;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<APawn> PlayerPawn;
 
 public:
 	// Called every frame

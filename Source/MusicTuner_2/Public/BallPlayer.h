@@ -27,6 +27,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	void ControlBall(const FInputActionValue& Value);
+	void ControlCamera(const FInputActionValue& Value);
 
 public:
 
@@ -54,6 +55,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> ControlAction;
 
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> CameraRotateAction;
+
 	float Speed = 50.0f;
+	float rotSpeed = 2.0f;
 	float Health = 100.0f;
 };

@@ -34,7 +34,7 @@ ABallPlayer::ABallPlayer()
 
 	SpringArm->SetRelativeRotation(FRotator(-30.0f, 0.f, 0.f));
 
-	SpringArm->TargetArmLength = 450.0f;
+	SpringArm->TargetArmLength = 800.0f;
 	SpringArm->bInheritPitch = false;
 	SpringArm->bInheritRoll = false;
 	SpringArm->bInheritYaw = false;
@@ -57,6 +57,7 @@ void ABallPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
+
 	if (const APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -75,15 +76,31 @@ void ABallPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(ControlAction, ETriggerEvent::Triggered, this, &ABallPlayer::ControlBall);
+		EnhancedInputComponent->BindAction(CameraRotateAction, ETriggerEvent::Triggered, this, &ABallPlayer::ControlCamera);
 	}
 }
 
 void ABallPlayer::ControlBall(const FInputActionValue& Value) {
 	const FVector2D V = Value.Get<FVector2D>();
 
-	FVector ForceVector = FVector(V.Y, V.X, 0.0f) * Speed;
+	FVector ForceVector = Camera->GetForwardVector() * V.X * Speed + Camera->GetRightVector() * V.Y * Speed;
 
 	//Sphere->AddForce(ForceVector, NAME_None, true);
 	FVector nowPos = GetActorLocation();
 	SetActorLocation(FVector(nowPos.X + ForceVector.X, nowPos.Y + ForceVector.Y, nowPos.Z));
+}
+
+void ABallPlayer::ControlCamera(const FInputActionValue& Value) {
+	// マウスの移動量（Vector2D）を取得
+	FVector2D LookAxisVector = Value.Get<FVector2D>();
+
+	// 現在の回転を取得して、マウスの移動量を加算する
+	FRotator NewRotation = SpringArm->GetRelativeRotation();
+	NewRotation.Pitch += LookAxisVector.Y * rotSpeed;
+	NewRotation.Yaw += LookAxisVector.X * rotSpeed;
+
+	// Pitchの範囲を制限（ひっくり返らないように）
+	NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch, -80.f, 20.f);
+
+	SpringArm->SetRelativeRotation(NewRotation);
 }

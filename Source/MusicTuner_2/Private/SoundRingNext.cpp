@@ -25,6 +25,7 @@ ASoundRingNext::ASoundRingNext()
 void ASoundRingNext::BeginPlay()
 {
 	Super::BeginPlay();
+	PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 
 	//RingNum→RingCountの変換
 	//実際には3という数字で2本になり5で3本になるので、実際に欲しい本数(RingNum)から提出する数値(RingCount)に変換する
@@ -48,26 +49,20 @@ void ASoundRingNext::BeginPlay()
 		Disc->SetMaterial(0, DynamicMaterialInst);
 	}
 
-	//SoundRingをPlayerの方へ向ける
-	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-	FVector PlayerPos(0.0f, 0.0f, 0.0f);
-	if (PlayerPawn)
-	{
-		PlayerPos = PlayerPawn->GetActorLocation();
-	}
-
-	FVector Start = GetActorLocation(); // 自分の位置
-	FVector Target = PlayerPos;    // 相手（プレイヤー）の位置
-
-	// 回転値を計算
-	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Start, Target);
-	// Actorに適用する（相手の方を向かせる）
-	SetActorRotation(LookAtRotation);
+	//SoundRingをPlayerに向ける
+	SetSoundRingRotation();
 
 	//EmemyBallを生成する
-	for (int i = 0; i < RingNum; i++) {
-		//SpawnActorFromClassは思ったよりもめんどくさそう
-		GenerateEnemyTarget(10 * i);
+	//1度に何個Ballを生成するか
+	float DividedAngle = 360.0f / RingDivideNum;
+
+	for (int i = 0; i < RingNum - 1; i++) {
+		FEnemyBall BallArray;
+		for (int j = 0; j < RingDivideNum; j++) {
+			AActor* target = GenerateEnemyTarget(DividedAngle * j, SoundRingRadius_Single * (i * 2 + 1));
+			if (target)BallArray.Balls.Add(target);
+		}
+		enemyBalls.Add(BallArray);
 	}
 }
 
@@ -77,28 +72,28 @@ void ASoundRingNext::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	PassTime += DeltaTime;
 	DynamicMaterialInst->SetScalarParameterValue("TimeValue", PassTime);
+
+	SetEnemyTargetPos();
 }
 
-void ASoundRingNext::GenerateEnemyTarget(float deg) {
+AActor* ASoundRingNext::GenerateEnemyTarget(float deg, float length) {
 	// 1. スポーンする位置と回転を設定
 	FVector UpVec = GetActorUpVector();
 
-	//仮にPlayerの位置を原点とする
-	// 0番目のプレイヤーポーン（操作キャラクター）を取得
-	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-
 	FVector PlayerPos(0.0f, 0.0f, 0.0f);
-	if (PlayerPawn)
+
+	if (!IsValid(PlayerPawn))
 	{
-		// プレイヤーの現在位置（FVector）を取得
-		PlayerPos = PlayerPawn->GetActorLocation();
+		PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	}
+	// プレイヤーの現在位置（FVector）を取得
+	PlayerPos = PlayerPawn->GetActorLocation();
 
 	FVector VecPlayerToSelf = GetActorLocation() - PlayerPos;
 	VecPlayerToSelf.Normalize();
 
 	//Locationの設定を行う
-	FVector Location = RotateInAxis(UpVec, VecPlayerToSelf, deg) * 500 + GetActorLocation();
+	FVector Location = RotateInAxis(UpVec, VecPlayerToSelf, deg) * length + GetActorLocation();
 	//Location *= 500;
 	FRotator Rotation(0.0f, 0.0f, 0.0f);
 	FActorSpawnParameters SpawnParams;
@@ -117,19 +112,21 @@ void ASoundRingNext::GenerateEnemyTarget(float deg) {
 		if (SpawnedActor)
 		{
 			// 生成成功後の処理（例：初期化関数の呼び出しなど）
-			UE_LOG(LogTemp, Log, TEXT("Actor Spawned: %s"), *SpawnedActor->GetName());
+			return SpawnedActor;
 		}
 	}
+
+	return nullptr;
 }
 
+//AxisVecを軸として、BaseVecをDeg°だけ回したときの位置を計算する
 FVector ASoundRingNext::RotateInAxis(FVector AxisVec, FVector BaseVec, float Deg) {
 	// 2. 回転の軸となるベクトル (UpVector)
 	// ※回転軸にする場合は必ず正規化（Normalize）する必要があります
 	FVector Axis = AxisVec.GetSafeNormal();
 
 	// 3. 回転させたい角度（例：45度）
-	float AngleDegrees = Deg;
-	float AngleRadians = FMath::DegreesToRadians(AngleDegrees);
+	float AngleRadians = FMath::DegreesToRadians(Deg);
 
 	// 4. 軸と角度からクォータニオンを作成
 	FQuat RotationQuat = FQuat(Axis, AngleRadians);
@@ -139,6 +136,59 @@ FVector ASoundRingNext::RotateInAxis(FVector AxisVec, FVector BaseVec, float Deg
 	return RotatedVector;
 }
 
-void ASoundRingNext::SetEnemyTargetPos() {
+void ASoundRingNext::SetSoundRingRotation() {
+	//SoundRingをPlayerの方へ向ける
+	FVector PlayerPos(0.0f, 0.0f, 0.0f);
 
+	if (!IsValid(PlayerPawn)) {
+		PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	}
+	PlayerPos = PlayerPawn->GetActorLocation();
+
+	// 回転値を計算
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(
+		GetActorLocation(), PlayerPos);
+
+	// Actorに適用する（相手の方を向かせる）
+	SetActorRotation(LookAtRotation);
+}
+
+void ASoundRingNext::SetEnemyTargetPos() {
+	FVector nowSoundRingPos = GetActorLocation();
+
+	//1.基本ベクトルの計算
+	if (!IsValid(PlayerPawn)) {
+		PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	}
+	FVector BaseVec = nowSoundRingPos - PlayerPawn->GetActorLocation();
+	BaseVec.Normalize();
+
+	//内積だけでは-の角度が計算できないのでSoundRingのUpVecを取得しておく
+	FVector BaseUpVec = GetActorUpVector();
+
+	//2.軸ベクトルの計算
+	SetSoundRingRotation();
+	FVector AxisVec = GetActorUpVector();
+
+	for (FEnemyBall& enemyball : enemyBalls) {
+		for (AActor* balls : enemyball.Balls) {
+			//3.基本ベクトルと、(中心→Ball)のベクトルがなす角を計算する
+			FVector BallVec = balls->GetActorLocation() - nowSoundRingPos;
+			float Length = BallVec.Length();
+			BallVec.Normalize();
+
+			//2つのベクトルの内積から角度を求める
+			float DotProductValue = FVector::DotProduct(BaseVec, BallVec);
+			float BallDegree = FMath::RadiansToDegrees(FMath::Acos(DotProductValue));
+
+			//外積もとって-かどうか確かめる
+			FVector CrossProduct = FVector::CrossProduct(BaseVec, BallVec);
+			if (FVector::DotProduct(CrossProduct, BaseUpVec) < 0) {
+				BallDegree *= -1;
+			}
+
+			//4.Ballの正しい位置を決定する
+			balls->SetActorLocation(nowSoundRingPos + Length * RotateInAxis(AxisVec, BaseVec, BallDegree));
+		}
+	}
 }
