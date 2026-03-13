@@ -2,6 +2,7 @@
 
 
 #include "ACharacterBase.h"
+#include "SoundRingNext.h"
 
 // Sets default values
 //コンストラクタ
@@ -9,7 +10,6 @@ AACharacterBase::AACharacterBase()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -17,14 +17,20 @@ void AACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UKismetSystemLibrary::PrintString(this, "C++ Hello World!", true, false, FColor::Cyan, 2.f);
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = GetInstigator();
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	UE_LOG(LogTemp, Display, TEXT("Display Message"));
+	UWorld* world = GetWorld();
+	if (world && SoundRingClass) {
+		SoundRing = world->SpawnActor<ASoundRingNext>(
+			SoundRingClass, GetActorLocation() + SoundRingOffset, GetActorRotation(), SpawnParams);
 
-	FString message = TEXT("Duration : ");
-	message += UKismetStringLibrary::Conv_DoubleToString(Duration);
-
-	GEngine->AddOnScreenDebugMessage(-1, Duration, FColor::Cyan, message, true, FVector2D(2.0f, 2.0f));
+		if (SoundRing) {
+			//SoundRing->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		}
+	}
 }
 
 // Called every frame

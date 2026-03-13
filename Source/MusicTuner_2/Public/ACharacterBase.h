@@ -9,6 +9,8 @@
 
 #include "ACharacterBase.generated.h"
 
+class ASoundRingNext;
+
 UCLASS()
 class MUSICTUNER_2_API AACharacterBase : public ACharacter
 {
@@ -23,6 +25,15 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, Category = "Appearance")
+	TSubclassOf<ASoundRingNext> SoundRingClass;
+
+	UPROPERTY(VisibleAnywhere, Category = "Appearance")
+	TObjectPtr<ASoundRingNext> SoundRing;
+
+	UPROPERTY(EditAnywhere, Category = "Appearance")
+	FVector SoundRingOffset;
 
 public:
 	// Called every frame
