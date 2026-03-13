@@ -20,7 +20,7 @@ public:
 	// Sets default values for this character's properties
 	AACharacterBase();
 
-	const float Duration = 10.0f;
+	//const float Duration = 10.0f;
 
 protected:
 	// Called when the game starts or when spawned

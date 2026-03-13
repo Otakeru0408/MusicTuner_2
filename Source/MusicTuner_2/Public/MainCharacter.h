@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Character.h"
 #include "InputActionValue.h"     // 追加する
-#include "BallPlayer.generated.h"
+#include "GameFramework/CharacterMovementComponent.h" // 必須インクルード
+
+#include "MainCharacter.generated.h"
 
 class UStaticMeshComponent;
 class USpringArmComponent;
@@ -15,43 +17,40 @@ class UInputAction;               // 追加する
 class UCapsuleComponent;
 
 UCLASS()
-class MUSICTUNER_2_API ABallPlayer : public APawn
+class MUSICTUNER_2_API AMainCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
-	ABallPlayer();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-	void ControlBall(const FInputActionValue& Value);
-	void ControlCamera(const FInputActionValue& Value);
+	// Sets default values for this character's properties
+	AMainCharacter();
 
 public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
 protected:
-	/** Character用のStaticMesh : Sphere */
-	UPROPERTY(VisibleAnywhere, Category = Character)
-	TObjectPtr<UStaticMeshComponent> Sphere;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Character")
-	TObjectPtr<USkeletalMeshComponent> SkeletalMesh;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Component")
-	TObjectPtr<UCapsuleComponent> Capsule;
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	void ControlMovement(const FInputActionValue& Value);
+	void ControlCamera(const FInputActionValue& Value);
+	void SetMoveToDash(const FInputActionValue& Value) {
+		GetCharacterMovement()->MaxWalkSpeed = 800.0f;
+	}
+	void SetMoveToWalk(const FInputActionValue& Value) {
+		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	}
 
 	/** Cameraを配置するためのSpringArm */
-	UPROPERTY(VisibleAnywhere, Category = Camera)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	TObjectPtr<USpringArmComponent> SpringArm;
 
 	/** SpringArmの先端に配置するカメラ */
-	UPROPERTY(VisibleAnywhere, Category = Camera)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	TObjectPtr<UCameraComponent> Camera;
 
 	/** MappingContext */
@@ -66,12 +65,16 @@ protected:
 	TObjectPtr<UInputAction> CameraRotateAction;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> DashFlag;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
 	float Speed = 50.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
-	float rotSpeed = 2.0f;
+	float rotSpeedX = 2.0f;
+	UPROPERTY(EditAnywhere, Category = "Input")
+	float rotSpeedY = 2.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	float Health = 100.0f;
-
 };

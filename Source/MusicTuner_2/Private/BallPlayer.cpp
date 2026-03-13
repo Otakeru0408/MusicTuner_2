@@ -24,21 +24,8 @@ ABallPlayer::ABallPlayer()
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
 	SkeletalMesh->SetupAttachment(Capsule);
 
-	Sphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
-	RootComponent = Sphere;
-
-	UStaticMesh* mesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere"));
-
-	Sphere->SetStaticMesh(mesh);
-
-	UMaterial* material = LoadObject<UMaterial>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial"));
-
-	Sphere->SetMaterial(0, material);
-
-	Sphere->SetSimulatePhysics(true);
-
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
-	SpringArm->SetupAttachment(Sphere);
+	SpringArm->SetupAttachment(Capsule);
 
 	SpringArm->SetRelativeRotation(FRotator(-30.0f, 0.f, 0.f));
 
@@ -85,6 +72,7 @@ void ABallPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	{
 		EnhancedInputComponent->BindAction(ControlAction, ETriggerEvent::Triggered, this, &ABallPlayer::ControlBall);
 		EnhancedInputComponent->BindAction(CameraRotateAction, ETriggerEvent::Triggered, this, &ABallPlayer::ControlCamera);
+		UE_LOG(LogTemp, Display, TEXT("Change Rotation"));
 	}
 }
 
@@ -111,4 +99,5 @@ void ABallPlayer::ControlCamera(const FInputActionValue& Value) {
 	NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch, -80.f, 20.f);
 
 	SpringArm->SetRelativeRotation(NewRotation);
+
 }
