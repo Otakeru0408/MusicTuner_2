@@ -17,12 +17,14 @@ void AACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = GetInstigator();
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 	UWorld* world = GetWorld();
+	if (SoundRingClass) UE_LOG(LogTemp, Display, TEXT("Instantiate"));
 	if (world && SoundRingClass) {
 		SoundRing = world->SpawnActor<ASoundRingNext>(
 			SoundRingClass, GetActorLocation() + SoundRingOffset, GetActorRotation(), SpawnParams);
