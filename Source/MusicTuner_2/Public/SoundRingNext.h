@@ -4,9 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "EnemyBall.h"
-#include "EnemyTarget.h"
 #include "SoundRingNext.generated.h"
+
+struct FEnemyBall;
+class AEnemyTarget;
 
 UCLASS()
 class MUSICTUNER_2_API ASoundRingNext : public AActor
@@ -22,10 +23,23 @@ protected:
 	virtual void BeginPlay() override;
 
 	//EnemyTargetを生成する関数
+	UFUNCTION(BlueprintCallable)
 	AActor* GenerateEnemyTarget(float deg, float length);
 
+	//毎フレームPlayerの方向へ向けてSoundRingと弾の位置角度を調整する関数
+	UFUNCTION(BlueprintCallable)
 	void SetEnemyTargetPos();
+
+	//SoundRingの水平面をPlayerに向ける関数
+	UFUNCTION(BlueprintCallable)
 	void SetSoundRingRotation();
+
+	//BallたちがSoundRingを循環して動くようにする関数
+	UFUNCTION(BlueprintCallable)
+	void ResetBallsPosition();
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Timer")
+	int resetBallIndex = 0;
 
 	//あるベクトルを中心としてベースとなるベクトルを回転させたときのベクトルを計算する
 	FVector RotateInAxis(FVector AxisVec, FVector BaseVec, float Deg);
@@ -59,10 +73,13 @@ protected:
 	TArray<FEnemyBall> enemyBalls;
 
 	UPROPERTY(EditAnywhere, Category = "Spawning")
-	TSubclassOf<AActor> ActorClassToSpawn;
+	TSubclassOf<AEnemyTarget> ActorClassToSpawn;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<APawn> PlayerPawn;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Timer")
+	FTimerHandle ResetTimerHandle;
 
 public:
 	// Called every frame

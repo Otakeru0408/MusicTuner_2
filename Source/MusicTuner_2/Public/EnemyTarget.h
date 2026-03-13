@@ -14,18 +14,25 @@ class MUSICTUNER_2_API AEnemyTarget : public AActor
 public:
 	// Sets default values for this actor's properties
 	AEnemyTarget();
+	void SetSpeed(float sp) {
+		Speed = sp;
+	}
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	//SoundRingÇ∆ÇÃãóó£ÇåvéZÇ∑ÇÈä÷êî
 	UFUNCTION(BlueprintPure)
 	float CulcDistanceToParent();
+
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Parameter")
+	TObjectPtr<AActor> ParentActor;*/
 
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	TObjectPtr<UStaticMeshComponent> Sphere;
 
-	UPROPERTY(EditAnywhere, Category = "Parameter")
+	UPROPERTY(VisibleAnywhere, Category = "Parameter")
 	float Speed = 0.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Parameter")
@@ -38,7 +45,10 @@ protected:
 	float NoDamageRange = 150.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Parameter")
-	TObjectPtr<AActor> ParentActor;
+	TObjectPtr<UMaterialInterface> HitUnableMat;
+
+	UPROPERTY(EditAnywhere, Category = "Parameter")
+	TObjectPtr<UMaterialInterface> HitEnableMat;
 
 public:
 	// Called every frame

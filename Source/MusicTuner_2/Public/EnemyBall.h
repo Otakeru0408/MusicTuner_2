@@ -5,9 +5,7 @@
 #include "CoreMinimal.h"
 #include "EnemyBall.generated.h"
 
-/**
- *
- */
+
 USTRUCT(BlueprintType)
 struct FEnemyBall
 {
@@ -15,5 +13,5 @@ struct FEnemyBall
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<TObjectPtr<AActor>> Balls;
-
+	float NowRadius = 0.0f;
 };

@@ -11,6 +11,9 @@ AEnemyTarget::AEnemyTarget()
 
 	Sphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sphere"));
 	RootComponent = Sphere;
+	if (HitUnableMat) {
+		Sphere->SetMaterial(0, HitUnableMat);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -26,7 +29,7 @@ void AEnemyTarget::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	FVector forward = Sphere->GetForwardVector();
-	FVector NextPos = forward * Speed + GetActorLocation();
+	FVector NextPos = forward * Speed * DeltaTime + GetActorLocation();
 	SetActorLocation(NextPos);
 
 	//プレイヤーに一定期間でダメージを与え続けるための変数
@@ -34,15 +37,22 @@ void AEnemyTarget::Tick(float DeltaTime)
 		DamageTime -= DeltaTime;
 	}
 
+	//UE_LOG(LogTemp, Display, TEXT("Distance : %f"), CulcDistanceToParent());
+
 	//Parentから一定範囲内はダメージを与えられないようにするが、そこを超えたらダメージできるようにする
-	if (CulcDistanceToParent() >= NoDamageRange) {
-		//Sphere->SetMaterial()
+	if (CulcDistanceToParent() >= NoDamageRange && HitEnableMat) {
+		Sphere->SetMaterial(0, HitEnableMat);
 	}
+	else {
+		Sphere->SetMaterial(0, HitUnableMat);
+	}
+
+
 }
 
 float AEnemyTarget::CulcDistanceToParent() {
-	if (!ParentActor)return 0.0f;
+	if (!GetOwner())return 0.0f;
 
-	FVector VectorToParent = ParentActor->GetActorLocation() - GetActorLocation();
+	FVector VectorToParent = GetOwner()->GetActorLocation() - GetActorLocation();
 	return VectorToParent.Length();
 }

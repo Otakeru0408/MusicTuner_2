@@ -8,6 +8,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerController.h" // 必要に応じて
 #include "Kismet/KismetMathLibrary.h"
+#include "EnemyBall.h"
+#include "EnemyTarget.h"
 
 // Sets default values
 ASoundRingNext::ASoundRingNext()
@@ -64,6 +66,19 @@ void ASoundRingNext::BeginPlay()
 		}
 		enemyBalls.Add(BallArray);
 	}
+
+	//BPMで弾を中心にリセットする機能
+	// タイマーの開始
+	if (BPM > 0) {
+		GetWorldTimerManager().SetTimer(
+			ResetTimerHandle,             // ハンドル
+			this,                      // 実行するオブジェクト
+			&ASoundRingNext::ResetBallsPosition, // 実行する関数のアドレス
+			60.0f / BPM,                      // 時間（秒）
+			true                       // ループするかどうか（falseなら1回切り）
+		);
+	}
+
 }
 
 // Called every frame
@@ -94,11 +109,13 @@ AActor* ASoundRingNext::GenerateEnemyTarget(float deg, float length) {
 
 	//Locationの設定を行う
 	FVector Location = RotateInAxis(UpVec, VecPlayerToSelf, deg) * length + GetActorLocation();
-	//Location *= 500;
-	FRotator Rotation(0.0f, 0.0f, 0.0f);
-	FActorSpawnParameters SpawnParams;
+	//算出したLocationを元に、中心から各ballまでのベクトルを取得→Rotationにする
+	FVector Direction = Location - GetActorLocation();
+	FRotator Rotation = Direction.Rotation();
+	FTransform ballTrans(Rotation, Location, FVector(0.5f));
 
 	// 2. 誰がスポーンさせたか（Owner）などの詳細設定（任意）
+	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = GetInstigator();
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
@@ -107,11 +124,14 @@ AActor* ASoundRingNext::GenerateEnemyTarget(float deg, float length) {
 	UWorld* World = GetWorld();
 	if (World && ActorClassToSpawn) // ActorClassToSpawnは TSubclassOf<AActor> 型の変数
 	{
-		AActor* SpawnedActor = World->SpawnActor<AActor>(ActorClassToSpawn, Location, Rotation, SpawnParams);
+		AEnemyTarget* SpawnedActor = World->SpawnActorDeferred<AEnemyTarget>(
+			ActorClassToSpawn, ballTrans,
+			SpawnParams.Owner, SpawnParams.Instigator, SpawnParams.SpawnCollisionHandlingOverride);
 
 		if (SpawnedActor)
 		{
 			// 生成成功後の処理（例：初期化関数の呼び出しなど）
+			SpawnedActor->SetSpeed(SoundRingRadius_Single * 2 * BPM / 60.0f);
 			return SpawnedActor;
 		}
 	}
@@ -170,7 +190,10 @@ void ASoundRingNext::SetEnemyTargetPos() {
 	SetSoundRingRotation();
 	FVector AxisVec = GetActorUpVector();
 
+	bool isChecked = false;		//各Ringの半径をしらべる（各Ringにつき1個のBallだけしらべる）
+
 	for (FEnemyBall& enemyball : enemyBalls) {
+		isChecked = false;
 		for (AActor* balls : enemyball.Balls) {
 			//3.基本ベクトルと、(中心→Ball)のベクトルがなす角を計算する
 			FVector BallVec = balls->GetActorLocation() - nowSoundRingPos;
@@ -189,6 +212,24 @@ void ASoundRingNext::SetEnemyTargetPos() {
 
 			//4.Ballの正しい位置を決定する
 			balls->SetActorLocation(nowSoundRingPos + Length * RotateInAxis(AxisVec, BaseVec, BallDegree));
+
+			//1周分のBallを保持するenemyBallに、その周の半径を持たせる
+			if (!isChecked) {
+				enemyball.NowRadius = Length;
+				isChecked = true;
+			}
 		}
 	}
+}
+
+void ASoundRingNext::ResetBallsPosition() {
+	FVector nowPos = GetActorLocation();
+	for (AActor* ball : enemyBalls[resetBallIndex].Balls) {
+		FVector direction = ball->GetActorLocation() - nowPos;
+		direction.Normalize();
+		ball->SetActorLocation(nowPos + direction * SoundRingRadius_Single);
+
+	}
+
+	resetBallIndex = (resetBallIndex + 1) % enemyBalls.Num();
 }
