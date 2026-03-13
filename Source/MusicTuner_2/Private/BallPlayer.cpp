@@ -9,12 +9,20 @@
 #include "EnhancedInputSubsystems.h" // 追加する
 #include "InputMappingContext.h"
 #include "InputActionValue.h"
+#include "Components/CapsuleComponent.h" // 必須インクルード
 
 // Sets default values
 ABallPlayer::ABallPlayer()
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	//カプセルコンポーネント(RootComponent)
+	Capsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
+	RootComponent = Capsule;
+
+	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
+	SkeletalMesh->SetupAttachment(Capsule);
 
 	Sphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	RootComponent = Sphere;

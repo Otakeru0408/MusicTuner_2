@@ -12,6 +12,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;       // ’Ç‰Á‚·‚é
 class UInputAction;               // ’Ç‰Á‚·‚é
+class UCapsuleComponent;
 
 UCLASS()
 class MUSICTUNER_2_API ABallPlayer : public APawn
@@ -38,6 +39,12 @@ private:
 	/** Character—p‚ÌStaticMesh : Sphere */
 	UPROPERTY(VisibleAnywhere, Category = Character, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UStaticMeshComponent> Sphere;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Character")
+	TObjectPtr<USkeletalMeshComponent> SkeletalMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Component")
+	TObjectPtr<UCapsuleComponent> Capsule;
 
 	/** Camera‚ð”z’u‚·‚é‚½‚ß‚ÌSpringArm */
 	UPROPERTY(VisibleAnywhere, Category = Camera, meta = (AllowPrivateAccess = "true"))
