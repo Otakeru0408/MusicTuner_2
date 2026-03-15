@@ -5,6 +5,9 @@
 #include "SoundRingNext.h"
 #include "MainCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "HealthComponent.h"
+#include "EnemyAIController.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 //コンストラクタ
@@ -12,6 +15,7 @@ AACharacterBase::AACharacterBase()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	Health = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -35,13 +39,34 @@ void AACharacterBase::BeginPlay()
 			SoundRing->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
 		}
 	}
+	AIC_Enemy = Cast <AEnemyAIController>(GetController());
+	BB_Enemy = AIC_Enemy->GetBlackboardComponent();
+
+	// 自分の OnTakeAnyDamage イベントに、作成した関数を登録する
+	OnTakeAnyDamage.AddDynamic(this, &AACharacterBase::HandleTakeAnyDamage);
 }
 
 // Called every frame
 void AACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (!BB_Enemy)BB_Enemy = AIC_Enemy->GetBlackboardComponent();
+}
 
+//ダメージを受けた時の関数
+void AACharacterBase::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser) {
+	UE_LOG(LogTemp, Log, TEXT("Damaged!"));
+	//もし攻撃対象をBlackBoardに設定していなかったら設定する
+	if (BB_Enemy && AIC_Enemy) {
+		UObject* target = BB_Enemy->GetValueAsObject(AIC_Enemy->TargetName);
+		if (target == nullptr && DamageCauser != nullptr) {
+			BB_Enemy->SetValueAsObject(AIC_Enemy->TargetName, DamageCauser);
+
+			//攻撃対象の方へ向く
+			FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), DamageCauser->GetActorLocation());
+			SetActorRotation(LookAtRotation);
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -56,6 +81,8 @@ FVector AACharacterBase::GetEnemyForwardVector() const {
 }
 
 bool AACharacterBase::DamageToEnemy(int32 DamageValue, AActor* DamageCauser, bool IsComboHit) {
+	if (!CanDamage())return false;
+
 	AMainCharacter* player = Cast<AMainCharacter>(DamageCauser);
 
 	if (player) {
@@ -68,7 +95,7 @@ bool AACharacterBase::DamageToEnemy(int32 DamageValue, AActor* DamageCauser, boo
 		);
 
 		// ログ出力（デバッグ用）
-		UE_LOG(LogTemp, Log, TEXT("%s took damage from CharacterBase!"), *GetName());
+		//UE_LOG(LogTemp, Log, TEXT("%s took damage from CharacterBase!"), *GetName());
 
 		return true;
 	}

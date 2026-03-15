@@ -61,7 +61,7 @@ void UCheckKickHit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 			if (IDamageTarget* target = Cast<IDamageTarget>(actor)) {
 				bool result = target->DamageToEnemy(1, MeshComp->GetOwner(), true);
 				if (result) {
-					UE_LOG(LogTemp, Log, TEXT("Attack Success"));
+					//UE_LOG(LogTemp, Log, TEXT("Attack Success"));
 				}
 			}
 			HitActors.Add(actor);

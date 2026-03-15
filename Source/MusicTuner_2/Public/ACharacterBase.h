@@ -7,10 +7,13 @@
 #include "Kismet/KismetSystemLibrary.h" //’Ç‰Á
 #include "Kismet/KismetStringLibrary.h" //’Ç‰Á
 #include "DamageTarget.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 #include "ACharacterBase.generated.h"
 
 class ASoundRingNext;
+class UHealthComponent;
+class AEnemyAIController;
 
 UCLASS()
 class MUSICTUNER_2_API AACharacterBase : public ACharacter, public IDamageTarget
@@ -30,6 +33,18 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+
+	UPROPERTY(VisibleAnywhere, Category = "Health")
+	TObjectPtr<UHealthComponent> Health;
+
+	UPROPERTY(VisibleAnywhere, Category = "AI")
+	TObjectPtr < AEnemyAIController> AIC_Enemy;
+
+	UPROPERTY(VisibleAnywhere, Category = "AI")
+	TObjectPtr < UBlackboardComponent> BB_Enemy;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Appearance")
 	TSubclassOf<ASoundRingNext> SoundRingClass;

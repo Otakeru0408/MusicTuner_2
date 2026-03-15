@@ -15,6 +15,7 @@ class UCameraComponent;
 class UInputMappingContext;       // ’Ç‰Á‚·‚é
 class UInputAction;               // ’Ç‰Á‚·‚é
 class UCapsuleComponent;
+class UHealthComponent;
 
 UCLASS()
 class MUSICTUNER_2_API AMainCharacter : public ACharacter
@@ -45,6 +46,9 @@ protected:
 		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 	}
 	void EventOnAttack(const FInputActionValue& value);
+
+	UPROPERTY(VisibleAnywhere, Category = "Health")
+	TObjectPtr<UHealthComponent> Health;
 
 	/** Camera‚ð”z’u‚·‚é‚½‚ß‚ÌSpringArm */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
@@ -83,5 +87,5 @@ protected:
 	float rotSpeedY = 2.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
-	float Health = 100.0f;
+	float HP = 100.0f;
 };

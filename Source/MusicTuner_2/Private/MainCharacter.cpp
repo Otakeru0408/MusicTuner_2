@@ -10,6 +10,7 @@
 #include "InputMappingContext.h"
 #include "InputActionValue.h"
 #include "Components/CapsuleComponent.h" // 必須インクルード
+#include "HealthComponent.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -39,6 +40,7 @@ AMainCharacter::AMainCharacter()
 	ControlAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/Input/InputActions/IA_PlayerMove"));
 	CameraRotateAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/Input/InputActions/IA_CameraRotation"));
 
+	Health = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 }
 
 // Called when the game starts or when spawned

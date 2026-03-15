@@ -63,31 +63,18 @@ float AEnemyTarget::CulcDistanceToParent() {
 }
 
 bool AEnemyTarget::DamageToEnemy(int32 DamageValue, AActor* DamageCauser, bool IsComboHit) {
+	if (!CanDamage())return false;
+
 	AMainCharacter* player = Cast<AMainCharacter>(DamageCauser);
 
 	if (player) {
 		UGameplayStatics::ApplyDamage(
-			GetOwner(),                 // ダメージを受けるアクター（この敵自身）
+			Enemy_Owner,                 // ダメージを受けるアクター（この敵自身）
 			(float)DamageValue,   // ダメージ量
 			player->GetController(), // ダメージを与えた人のコントローラー
 			DamageCauser,         // ダメージを引き起こしたアクター
 			UDamageType::StaticClass() // ダメージタイプ（基本はこれでOK）
 		);
-
-		// ログ出力（デバッグ用）
-		UE_LOG(LogTemp, Log, TEXT("%s took damage from CharacterBase!"), *GetName());
-
-		//攻撃時敵がPlayerに気づいていないなら気づかせる
-		/*if (Enemy_Owner) {
-			AEnemyAIController* AIC_Enemy = Cast<AEnemyAIController>(Enemy_Owner->GetController());
-			if (AIC_Enemy) {
-				UBlackboardComponent* BBComp = AIC_Enemy->GetBlackboardComponent();
-				if (BBComp)
-				{
-					BBComp->SetValueAsObject(AIC_Enemy->TargetName, player);
-				}
-			}
-		}*/
 
 		return true;
 	}
