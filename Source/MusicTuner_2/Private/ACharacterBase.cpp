@@ -30,7 +30,7 @@ void AACharacterBase::BeginPlay()
 			SoundRingClass, GetActorLocation() + SoundRingOffset, GetActorRotation(), SpawnParams);
 
 		if (SoundRing) {
-			//SoundRing->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+			SoundRing->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
 		}
 	}
 }

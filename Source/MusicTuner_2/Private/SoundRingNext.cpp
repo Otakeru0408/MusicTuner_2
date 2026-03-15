@@ -175,6 +175,8 @@ void ASoundRingNext::SetSoundRingRotation() {
 
 void ASoundRingNext::SetEnemyTargetPos() {
 	FVector nowSoundRingPos = GetActorLocation();
+	//移動中はSoundRingとTargetの動きにばらつきが発生するので移動量も勘案に入れる
+	FVector RingForward = GetOwner()->GetActorForwardVector() * (GetOwner()->GetVelocity().Length() / 100.0f);
 
 	//1.基本ベクトルの計算
 	if (!IsValid(PlayerPawn)) {
@@ -211,7 +213,7 @@ void ASoundRingNext::SetEnemyTargetPos() {
 			}
 
 			//4.Ballの正しい位置を決定する
-			balls->SetActorLocation(nowSoundRingPos + Length * RotateInAxis(AxisVec, BaseVec, BallDegree));
+			balls->SetActorLocation(nowSoundRingPos + Length * RotateInAxis(AxisVec, BaseVec, BallDegree) + RingForward * 2);
 
 			//1周分のBallを保持するenemyBallに、その周の半径を持たせる
 			if (!isChecked) {
