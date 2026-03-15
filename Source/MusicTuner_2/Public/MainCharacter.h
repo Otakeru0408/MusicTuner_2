@@ -44,6 +44,7 @@ protected:
 	void SetMoveToWalk(const FInputActionValue& Value) {
 		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 	}
+	void EventOnAttack(const FInputActionValue& value);
 
 	/** Camera‚ð”z’u‚·‚é‚½‚ß‚ÌSpringArm */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
@@ -66,6 +67,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> DashFlag;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> AttackAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UAnimMontage> AttackMontage;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	float Speed = 50.0f;

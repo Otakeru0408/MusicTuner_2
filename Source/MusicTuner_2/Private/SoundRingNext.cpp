@@ -132,6 +132,7 @@ AActor* ASoundRingNext::GenerateEnemyTarget(float deg, float length) {
 		{
 			// 生成成功後の処理（例：初期化関数の呼び出しなど）
 			SpawnedActor->SetSpeed(SoundRingRadius_Single * 2 * BPM / 60.0f);
+			SpawnedActor->SetEnemyReference(GetOwner());
 			return SpawnedActor;
 		}
 	}

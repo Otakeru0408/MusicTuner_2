@@ -16,6 +16,9 @@ class MUSICTUNER_2_API AEnemyAIController : public AAIController
 
 public:
 	AEnemyAIController();
+
+	UPROPERTY(VisibleAnywhere, Category = "AI")
+	FName TargetName = "TargetActor";
 protected:
 	virtual void OnPossess(APawn* InPawn)override;
 

@@ -4,10 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "DamageTarget.h"
+
 #include "EnemyTarget.generated.h"
 
+class AACharacterBase;
+
 UCLASS()
-class MUSICTUNER_2_API AEnemyTarget : public AActor
+class MUSICTUNER_2_API AEnemyTarget : public AActor, public IDamageTarget
 {
 	GENERATED_BODY()
 
@@ -17,6 +21,11 @@ public:
 	void SetSpeed(float sp) {
 		Speed = sp;
 	}
+	void SetEnemyReference(AActor* enemy);
+	UFUNCTION(BlueprintCallable, Category = "Damage")
+	virtual bool DamageToEnemy(int32 DamageValue, AActor* DamageCauser, bool IsComboHit)override;
+	UFUNCTION(BlueprintCallable, Category = "Damage")
+	virtual bool CanDamage()override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -26,11 +35,12 @@ protected:
 	UFUNCTION(BlueprintPure)
 	float CulcDistanceToParent();
 
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Parameter")
-	TObjectPtr<AActor> ParentActor;*/
 
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	TObjectPtr<UStaticMeshComponent> Sphere;
+
+	UPROPERTY(VisibleAnywhere, Category = "Parameter")
+	TObjectPtr <AACharacterBase> Enemy_Owner;
 
 	UPROPERTY(VisibleAnywhere, Category = "Parameter")
 	float Speed = 0.0f;

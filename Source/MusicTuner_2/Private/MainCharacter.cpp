@@ -73,6 +73,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(CameraRotateAction, ETriggerEvent::Triggered, this, &AMainCharacter::ControlCamera);
 		EnhancedInputComponent->BindAction(DashFlag, ETriggerEvent::Started, this, &AMainCharacter::SetMoveToDash);
 		EnhancedInputComponent->BindAction(DashFlag, ETriggerEvent::Completed, this, &AMainCharacter::SetMoveToWalk);
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AMainCharacter::EventOnAttack);
 	}
 }
 
@@ -108,4 +109,14 @@ void AMainCharacter::ControlCamera(const FInputActionValue& Value) {
 		// ※通常、マウスの上移動はプラスなので、反転させたい場合はマイナスを掛ける
 		AddControllerPitchInput(LookAxisVector.Y * -1 * rotSpeedY);
 	}
+}
+
+void AMainCharacter::EventOnAttack(const FInputActionValue& value) {
+	if (!AttackMontage) {
+		return;
+	}
+
+	float duration = PlayAnimMontage(AttackMontage);
+
+	//UE_LOG(LogTemp, Log, TEXT("Duration : %f"), duration);
 }

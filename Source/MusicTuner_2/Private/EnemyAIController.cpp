@@ -27,16 +27,8 @@ void AEnemyAIController::InitPlayerReference() {
 
 				// "TargetActor" という名前のキーに値をセット
 				// FNameで指定するため、Blackboard上の名前と一致させる必要があります
-				BBComp->SetValueAsObject(TEXT("TargetActor"), PlayerPawn);
+				//BBComp->SetValueAsObject(TargetName, PlayerPawn);
 
-				if (PlayerPawn)
-				{
-					FString Name = UKismetSystemLibrary::GetDisplayName(PlayerPawn);
-					UE_LOG(LogTemp, Warning, TEXT("Player Name: %s"), *Name);
-				}
-				else {
-					UE_LOG(LogTemp, Log, TEXT("Cannot Get PlayerPawn"));
-				}
 			}
 		}
 	}
