@@ -6,13 +6,14 @@
 #include "GameFramework/Character.h"
 #include "Kismet/KismetSystemLibrary.h" //’Ç‰Á
 #include "Kismet/KismetStringLibrary.h" //’Ç‰Á
+#include "DamageTarget.h"
 
 #include "ACharacterBase.generated.h"
 
 class ASoundRingNext;
 
 UCLASS()
-class MUSICTUNER_2_API AACharacterBase : public ACharacter
+class MUSICTUNER_2_API AACharacterBase : public ACharacter, public IDamageTarget
 {
 	GENERATED_BODY()
 
@@ -20,7 +21,11 @@ public:
 	// Sets default values for this character's properties
 	AACharacterBase();
 
-	//const float Duration = 10.0f;
+	//IDamageTarget‚ÌŽÀ‘•
+	UFUNCTION(BlueprintCallable, Category = "Damage")
+	virtual bool DamageToEnemy(int32 DamageValue, AActor* DamageCauser, bool IsComboHit)override;
+	UFUNCTION(BlueprintCallable, Category = "Damage")
+	virtual bool CanDamage()override;
 
 protected:
 	// Called when the game starts or when spawned

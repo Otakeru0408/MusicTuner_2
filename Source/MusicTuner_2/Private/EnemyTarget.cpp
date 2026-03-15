@@ -78,7 +78,7 @@ bool AEnemyTarget::DamageToEnemy(int32 DamageValue, AActor* DamageCauser, bool I
 		UE_LOG(LogTemp, Log, TEXT("%s took damage from CharacterBase!"), *GetName());
 
 		//UŒ‚“G‚ªPlayer‚É‹C‚Ã‚¢‚Ä‚¢‚È‚¢‚È‚ç‹C‚Ã‚©‚¹‚é
-		if (Enemy_Owner) {
+		/*if (Enemy_Owner) {
 			AEnemyAIController* AIC_Enemy = Cast<AEnemyAIController>(Enemy_Owner->GetController());
 			if (AIC_Enemy) {
 				UBlackboardComponent* BBComp = AIC_Enemy->GetBlackboardComponent();
@@ -87,7 +87,7 @@ bool AEnemyTarget::DamageToEnemy(int32 DamageValue, AActor* DamageCauser, bool I
 					BBComp->SetValueAsObject(AIC_Enemy->TargetName, player);
 				}
 			}
-		}
+		}*/
 
 		return true;
 	}
