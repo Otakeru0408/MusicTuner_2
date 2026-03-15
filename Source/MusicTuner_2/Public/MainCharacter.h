@@ -33,6 +33,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(VisibleAnywhere, Category = "Attack")
+	int DamageCount = 0;
+
+	UFUNCTION()
+	bool CheckHitCount();
 
 protected:
 	// Called when the game starts or when spawned
@@ -46,6 +51,7 @@ protected:
 		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 	}
 	void EventOnAttack(const FInputActionValue& value);
+
 
 	UPROPERTY(VisibleAnywhere, Category = "Health")
 	TObjectPtr<UHealthComponent> Health;
@@ -88,4 +94,5 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	float HP = 100.0f;
+
 };

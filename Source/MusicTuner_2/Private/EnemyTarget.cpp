@@ -63,8 +63,6 @@ float AEnemyTarget::CulcDistanceToParent() {
 }
 
 bool AEnemyTarget::DamageToEnemy(int32 DamageValue, AActor* DamageCauser, bool IsComboHit) {
-	if (!CanDamage())return false;
-
 	AMainCharacter* player = Cast<AMainCharacter>(DamageCauser);
 
 	if (player) {

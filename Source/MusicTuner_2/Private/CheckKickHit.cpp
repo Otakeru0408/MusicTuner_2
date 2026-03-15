@@ -6,17 +6,20 @@
 #include "Kismet/GameplayStatics.h"	
 #include "DrawDebugHelpers.h"
 #include "DamageTarget.h"
+#include "MainCharacter.h"
 
 void UCheckKickHit::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 	HitActors.Reset();
+	/*AMainCharacter* player = Cast<AMainCharacter>(MeshComp->GetOwner());
+	player->DamageCount = 0;*/
 }
 void UCheckKickHit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) {
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 
 	if (!MeshComp || !MeshComp->GetOwner())return;
 
-
+	AMainCharacter* player = Cast<AMainCharacter>(MeshComp->GetOwner());
 	FVector SocketLocation = MeshComp->GetSocketLocation(HitPartName);
 
 	//ObjectChannel : EnemyBall → ECC_GameTraceChannel1
@@ -55,13 +58,22 @@ void UCheckKickHit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 	);
 
 	if (bHit) {
+		//ヒットしたものをすべて調べる
 		for (AActor* actor : HitObjects) {
-			if (HitActors.Contains(actor))continue;
+			if (HitActors.Contains(actor))continue;	//今回の攻撃ですでにヒットしているものには攻撃しない
 
 			if (IDamageTarget* target = Cast<IDamageTarget>(actor)) {
+				if (!target->CanDamage()) continue;	//相手にダメージを与えられるかチェック
+
+				player->DamageCount++;	//この１撃でいくつのActorにヒットしたか計算
+				bool isFirstHit = player->CheckHitCount();	//この攻撃でコンボがつながるか(未実装)
+
+				//相手に攻撃する
 				bool result = target->DamageToEnemy(1, MeshComp->GetOwner(), true);
 				if (result) {
 					//UE_LOG(LogTemp, Log, TEXT("Attack Success"));
+
+					//player->StartCameraShake();//未実装
 				}
 			}
 			HitActors.Add(actor);

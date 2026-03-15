@@ -122,3 +122,7 @@ void AMainCharacter::EventOnAttack(const FInputActionValue& value) {
 
 	//UE_LOG(LogTemp, Log, TEXT("Duration : %f"), duration);
 }
+
+bool AMainCharacter::CheckHitCount() {
+	return true;
+}
