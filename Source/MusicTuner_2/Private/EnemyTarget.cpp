@@ -6,6 +6,7 @@
 #include "EnemyAIController.h"
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "MainCharacter.h"
 
 // Sets default values
 AEnemyTarget::AEnemyTarget()
@@ -62,7 +63,7 @@ float AEnemyTarget::CulcDistanceToParent() {
 }
 
 bool AEnemyTarget::DamageToEnemy(int32 DamageValue, AActor* DamageCauser, bool IsComboHit) {
-	AACharacterBase* player = Cast<AACharacterBase>(DamageCauser);
+	AMainCharacter* player = Cast<AMainCharacter>(DamageCauser);
 
 	if (player) {
 		UGameplayStatics::ApplyDamage(

@@ -16,6 +16,7 @@ void UCheckKickHit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 
 	if (!MeshComp || !MeshComp->GetOwner())return;
 
+
 	FVector SocketLocation = MeshComp->GetSocketLocation(HitPartName);
 
 	//ObjectChannel : EnemyBall → ECC_GameTraceChannel1
@@ -42,7 +43,7 @@ void UCheckKickHit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 
 	//当たり判定を表示する
 	DrawDebugSphere(
-		GetWorld(),
+		MeshComp->GetWorld(),
 		SocketLocation,
 		SphereRadius,
 		12,             // 球体のセグメント数（多いほど滑らかな球になります）
@@ -57,9 +58,13 @@ void UCheckKickHit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 		for (AActor* actor : HitObjects) {
 			if (HitActors.Contains(actor))continue;
 
-			if (actor->Implements<UDamageTarget>()) {
-				//IDamageTarget::CanDamage()
+			if (IDamageTarget* target = Cast<IDamageTarget>(actor)) {
+				bool result = target->DamageToEnemy(1, MeshComp->GetOwner(), true);
+				if (result) {
+					UE_LOG(LogTemp, Log, TEXT("Attack Success"));
+				}
 			}
+			HitActors.Add(actor);
 		}
 	}
 	else {
