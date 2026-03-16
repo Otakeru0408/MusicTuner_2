@@ -23,7 +23,7 @@ void AACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-
+	//SoundRing‚ğ¶¬‚·‚é
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = GetInstigator();
@@ -39,6 +39,8 @@ void AACharacterBase::BeginPlay()
 			SoundRing->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
 		}
 	}
+
+	//Œã‚Ì‚½‚ß‚ÉAIController‚ÆBlackboard‚ğ•Û‚µ‚Ä‚¨‚­
 	AIC_Enemy = Cast <AEnemyAIController>(GetController());
 	BB_Enemy = AIC_Enemy->GetBlackboardComponent();
 

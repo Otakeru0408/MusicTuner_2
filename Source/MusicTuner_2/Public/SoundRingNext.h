@@ -8,6 +8,7 @@
 
 struct FEnemyBall;
 class AEnemyTarget;
+class UAudioComponent;
 
 UCLASS()
 class MUSICTUNER_2_API ASoundRingNext : public AActor
@@ -38,8 +39,20 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void ResetBallsPosition();
 
+	UFUNCTION()
+	void EventOnBPM();
+
+	UFUNCTION()
+	float CulcAttenuationRate();
+
+	UPROPERTY(VisibleAnywhere, Category = "Sound")
+	TObjectPtr <UAudioComponent> Audio;
+
 	UPROPERTY(VisibleDefaultsOnly, Category = "Timer")
 	int resetBallIndex = 0;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	float AttenuationRange = 1400.0f;
 
 	//あるベクトルを中心としてベースとなるベクトルを回転させたときのベクトルを計算する
 	FVector RotateInAxis(FVector AxisVec, FVector BaseVec, float Deg);

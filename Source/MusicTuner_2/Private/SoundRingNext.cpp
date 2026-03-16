@@ -10,6 +10,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "EnemyBall.h"
 #include "EnemyTarget.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 ASoundRingNext::ASoundRingNext()
@@ -21,6 +22,8 @@ ASoundRingNext::ASoundRingNext()
 	RootComponent = Disc;
 	Disc->SetCollisionProfileName(FName("NoCollision"));
 
+	Audio = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	Audio->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -73,12 +76,19 @@ void ASoundRingNext::BeginPlay()
 		GetWorldTimerManager().SetTimer(
 			ResetTimerHandle,             // ハンドル
 			this,                      // 実行するオブジェクト
-			&ASoundRingNext::ResetBallsPosition, // 実行する関数のアドレス
+			&ASoundRingNext::EventOnBPM, // 実行する関数のアドレス
 			60.0f / BPM,                      // 時間（秒）
 			true                       // ループするかどうか（falseなら1回切り）
 		);
 	}
 
+}
+
+//BPMにあわせて実行される関数をまとめているもの
+void ASoundRingNext::EventOnBPM() {
+	ResetBallsPosition();
+	Audio->SetVolumeMultiplier(CulcAttenuationRate());
+	Audio->Play();
 }
 
 // Called every frame
@@ -225,6 +235,7 @@ void ASoundRingNext::SetEnemyTargetPos() {
 	}
 }
 
+//BPMごとに呼び出される、ボールを中心に戻す関数
 void ASoundRingNext::ResetBallsPosition() {
 	FVector nowPos = GetActorLocation();
 	for (AActor* ball : enemyBalls[resetBallIndex].Balls) {
@@ -235,4 +246,23 @@ void ASoundRingNext::ResetBallsPosition() {
 	}
 
 	resetBallIndex = (resetBallIndex + 1) % enemyBalls.Num();
+}
+
+//Audioの音量を距離によって変化させるための割合を計測する
+float ASoundRingNext::CulcAttenuationRate() {
+	FVector PlayerPos(0.0f, 0.0f, 0.0f);
+
+	if (!IsValid(PlayerPawn)) {
+		PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	}
+	PlayerPos = PlayerPawn->GetActorLocation();
+
+	//Playerと自身の距離を測る
+	float Distance = (PlayerPos - GetActorLocation()).Length();
+
+	//AttenuationRangeよりもはなれていたら0、一番近かったら1としたい。
+	float Rate = Distance / AttenuationRange;
+	Rate = 1 - Rate;
+
+	return FMath::Clamp(Rate, 0.0f, 1.0f);
 }
