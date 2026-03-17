@@ -17,6 +17,7 @@ class UInputAction;
 class UCapsuleComponent;
 class UHealthComponent;
 class UAudioComponent;
+class UPlayerHP;
 
 UCLASS()
 class MUSICTUNER_2_API AMainCharacter : public ACharacter
@@ -56,6 +57,10 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
 	void ControlMovement(const FInputActionValue& Value);
 	void ControlCamera(const FInputActionValue& Value);
 	void SetMoveToDash(const FInputActionValue& Value) {
@@ -66,7 +71,11 @@ protected:
 	}
 	void EventOnAttack(const FInputActionValue& value);
 
+	UPROPERTY(EditAnywhere, Category = "Widget")
+	TSubclassOf<UPlayerHP> Widget_HP_Class;
 
+	UPROPERTY()
+	TObjectPtr<UPlayerHP> Widget_HP;
 
 	UPROPERTY(VisibleAnywhere, Category = "Health")
 	TObjectPtr<UHealthComponent> Health;

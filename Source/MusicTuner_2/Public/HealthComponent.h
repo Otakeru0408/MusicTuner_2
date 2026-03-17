@@ -16,14 +16,22 @@ public:
 	// Sets default values for this component's properties
 	UHealthComponent();
 
+	UFUNCTION()
+	void UpdateHP(float Damage);
+
+	UFUNCTION()
+	float GetCurrectHP() { return CurrentHealth; }
+
+	UFUNCTION()
+	float GetMaxHP() { return MaxHealth; }
+
+	UFUNCTION()
+	float GetCurrentPercent() { return CurrentHealth / MaxHealth; }
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	// ダメージを受け取った時のハンドラ（UFUNCTIONが必須）
-
-	UFUNCTION()
-	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
-public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth = 100.0f;

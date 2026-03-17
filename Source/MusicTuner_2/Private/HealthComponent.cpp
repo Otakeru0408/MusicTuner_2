@@ -17,7 +17,7 @@ UHealthComponent::UHealthComponent()
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	/*
 	// 親アクター（Owner）を取得
 	AActor* Owner = GetOwner();
 	if (Owner)
@@ -25,9 +25,10 @@ void UHealthComponent::BeginPlay()
 		// 親アクターが受けるダメージイベントをこのコンポーネントで監視する
 		Owner->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::HandleTakeAnyDamage);
 	}
+	*/
 }
 
-void UHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
+void UHealthComponent::UpdateHP(float Damage)
 {
 	if (Damage <= 0.0f || CurrentHealth <= 0.0f) return;
 

@@ -13,6 +13,8 @@
 #include "Components/AudioComponent.h" // 必須インクルード
 #include "HealthComponent.h"
 #include "DamageCameraShake.h"
+#include "Blueprint/UserWidget.h"
+#include "PlayerHP.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -61,6 +63,15 @@ void AMainCharacter::BeginPlay()
 			SubSystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	if (Widget_HP_Class) {
+		Widget_HP = CreateWidget<UPlayerHP>(GetWorld(), Widget_HP_Class);
+		if (Widget_HP) {
+			Widget_HP->AddToViewport();
+
+			Widget_HP->InitData(Health->GetMaxHP());
+		}
+	}
 }
 
 // Called every frame
@@ -68,6 +79,24 @@ void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+float AMainCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	// 1. 親クラスの処理を呼び、実際に適用されるダメージ量を受け取る
+	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	if (ActualDamage > 0.f)
+	{
+		// 2. HPを減らす
+		//HealthCOmponentでなにかTakeDamageに登録している関数があるぞ？
+		Health->UpdateHP(ActualDamage);
+
+		Widget_HP->UpdateHP(Health->GetCurrentPercent());
+	}
+
+	// 最終的なダメージ量を返すのが決まり
+	return ActualDamage;
 }
 
 // Called to bind functionality to input
