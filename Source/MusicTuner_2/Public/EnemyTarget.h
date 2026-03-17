@@ -49,6 +49,9 @@ protected:
 	float Speed = 0.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Parameter")
+	float DamageNum = 1.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Parameter")
 	float DamageTime = 0.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Parameter")

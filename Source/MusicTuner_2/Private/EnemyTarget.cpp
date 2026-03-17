@@ -68,7 +68,7 @@ void AEnemyTarget::NotifyActorBeginOverlap(AActor* OtherActor)
 		if (player && DamageTime <= 0) {
 			UGameplayStatics::ApplyDamage(
 				player,
-				1.0f,
+				DamageNum,
 				Enemy_Owner->GetController(),
 				this,
 				UDamageType::StaticClass()

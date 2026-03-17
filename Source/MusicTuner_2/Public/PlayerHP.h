@@ -18,8 +18,19 @@ class MUSICTUNER_2_API UPlayerHP : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable)
+	void UpdateHP(float HealthPercent);
+
+	UFUNCTION()
+	void InitData(float maxHP);
+
+
+
 	UPROPERTY(meta = (BindWidget))
 	class UImage* HP_Bar;
+
+	UPROPERTY(meta = (BindWidget))
+	class UImage* HP_LateBar;
 
 	UPROPERTY(meta = (BindWidget))
 	class UEditableTextBox* HP_Text;
@@ -30,9 +41,12 @@ public:
 	UPROPERTY()
 	TObjectPtr<UCanvasPanelSlot> HP_Bar_Slot;
 
-	UFUNCTION(BlueprintCallable)
-	void UpdateHP(float HealthPercent);
+	UPROPERTY()
+	TObjectPtr<UCanvasPanelSlot> HP_LateBar_Slot;
 
-	UFUNCTION()
-	void InitData(float maxHP);
+	UPROPERTY(EditDefaultsOnly, Category = "Parameter")
+	float DamageDelayTime = 0.2f;
+
+private:
+	FTimerHandle SoundStopTimerHandle;
 };

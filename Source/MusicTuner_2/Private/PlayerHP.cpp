@@ -16,6 +16,12 @@ void UPlayerHP::InitData(float maxHP) {
 		}
 	}
 
+	if (HP_LateBar)
+	{
+		// SlotをCanvasPanelSlotとして取得
+		HP_LateBar_Slot = Cast<UCanvasPanelSlot>(HP_LateBar->Slot);
+	}
+
 	if (HP_Text) {
 		// 1. float を文字列（FText）に変換
 		// FText::Format を使うと「100 / 100」のような整形が楽です
@@ -33,4 +39,13 @@ void UPlayerHP::UpdateHP(float HealthPercent) {
 	if (HP_Bar_Slot) {
 		HP_Bar_Slot->SetSize(FVector2D(MaxBarSize.X * HealthPercent, MaxBarSize.Y));
 	}
+	GetWorld()->GetTimerManager().SetTimer(
+		SoundStopTimerHandle, [this, HealthPercent]()
+		{
+			if (HP_LateBar_Slot) {
+				HP_LateBar_Slot->SetSize(FVector2D(MaxBarSize.X * HealthPercent, MaxBarSize.Y));
+			}
+		},
+		DamageDelayTime, false
+	);
 }
