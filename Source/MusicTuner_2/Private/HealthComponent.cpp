@@ -38,5 +38,6 @@ void UHealthComponent::UpdateHP(float Damage)
 	{
 		// ここで死亡通知を送る（デリゲートを飛ばすとさらに良い）
 		UE_LOG(LogTemp, Warning, TEXT("%s Died!"), *GetOwner()->GetName());
+		isAlive = false;
 	}
 }

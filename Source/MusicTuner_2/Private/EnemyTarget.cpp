@@ -19,6 +19,7 @@ AEnemyTarget::AEnemyTarget()
 	if (HitUnableMat) {
 		Sphere->SetMaterial(0, HitUnableMat);
 	}
+	Sphere->SetGenerateOverlapEvents(true);
 }
 
 // Called when the game starts or when spawned
@@ -53,6 +54,30 @@ void AEnemyTarget::Tick(float DeltaTime)
 	}
 
 
+}
+
+void AEnemyTarget::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	// 親クラスの処理を呼ぶ
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	// 相手が有効かつ自分自身ではないことを確認
+	if (OtherActor && (OtherActor != this))
+	{
+		AMainCharacter* player = Cast<AMainCharacter>(OtherActor);
+		if (player && DamageTime <= 0) {
+			UGameplayStatics::ApplyDamage(
+				player,
+				1.0f,
+				Enemy_Owner->GetController(),
+				this,
+				UDamageType::StaticClass()
+			);
+
+			if (AttackSound)UGameplayStatics::PlaySound2D(GetWorld(), AttackSound);
+			DamageTime = DamageMaxTime;
+		}
+	}
 }
 
 float AEnemyTarget::CulcDistanceToParent() {

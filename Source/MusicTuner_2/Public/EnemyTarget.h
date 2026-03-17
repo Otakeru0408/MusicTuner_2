@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "DamageTarget.h"
+#include "Components/SphereComponent.h"
 
 #include "EnemyTarget.generated.h"
 
@@ -35,6 +36,8 @@ protected:
 	UFUNCTION(BlueprintPure)
 	float CulcDistanceToParent();
 
+	UFUNCTION()
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	TObjectPtr<UStaticMeshComponent> Sphere;
@@ -59,6 +62,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Parameter")
 	TObjectPtr<UMaterialInterface> HitEnableMat;
+
+	UPROPERTY(EditAnywhere, Category = "Parameter")
+	TObjectPtr<USoundBase> AttackSound;
 
 public:
 	// Called every frame

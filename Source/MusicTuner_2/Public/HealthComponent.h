@@ -28,6 +28,9 @@ public:
 	UFUNCTION()
 	float GetCurrentPercent() { return CurrentHealth / MaxHealth; }
 
+	UFUNCTION()
+	bool GetIsAlive() { return isAlive; }
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -38,6 +41,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
 	float CurrentHealth;
+
+	UPROPERTY(VisibleInstanceOnly, Category = "Health")
+	bool isAlive = true;
 
 	// åªç›ÇÃHPäÑçáÇï‘Ç∑ÅiUIêßçÏÇ»Ç«Ç≈ï÷óòÅj
 	UFUNCTION(BlueprintCallable, Category = "Health")
