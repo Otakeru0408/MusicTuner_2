@@ -16,6 +16,16 @@ AACharacterBase::AACharacterBase()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	Health = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+
+	// コンポーネントの生成
+	HPWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPWidgetComponent"));
+
+	// メッシュやルートにアタッチ（頭上に配置したい場合は Mesh にアタッチするのが一般的）
+	HPWidget->SetupAttachment(GetMesh());
+
+	// デフォルトの設定をコードで入れておくとBPで楽になります
+	HPWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	HPWidget->SetDrawAtDesiredSize(true);
 }
 
 // Called when the game starts or when spawned

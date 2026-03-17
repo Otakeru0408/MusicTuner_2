@@ -8,6 +8,7 @@
 #include "Kismet/KismetStringLibrary.h" //’Ç‰Á
 #include "DamageTarget.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/WidgetComponent.h"
 
 #include "ACharacterBase.generated.h"
 
@@ -39,6 +40,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Health")
 	TObjectPtr<UHealthComponent> Health;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	TObjectPtr<UWidgetComponent> HPWidget;
 
 	UPROPERTY(VisibleAnywhere, Category = "AI")
 	TObjectPtr < AEnemyAIController> AIC_Enemy;
