@@ -24,6 +24,7 @@ ASoundRingNext::ASoundRingNext()
 
 	Audio = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	Audio->SetupAttachment(RootComponent);
+	Audio->SetAutoActivate(false);
 }
 
 // Called when the game starts or when spawned

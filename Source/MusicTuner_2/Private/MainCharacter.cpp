@@ -10,7 +10,9 @@
 #include "InputMappingContext.h"
 #include "InputActionValue.h"
 #include "Components/CapsuleComponent.h" // 必須インクルード
+#include "Components/AudioComponent.h" // 必須インクルード
 #include "HealthComponent.h"
+#include "DamageCameraShake.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -39,6 +41,10 @@ AMainCharacter::AMainCharacter()
 	DefaultMappingContext = LoadObject<UInputMappingContext>(nullptr, TEXT("/Game/Input/IMC_Player"));
 	ControlAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/Input/InputActions/IA_PlayerMove"));
 	CameraRotateAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/Input/InputActions/IA_CameraRotation"));
+
+	Audio = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	Audio->SetupAttachment(RootComponent);
+	Audio->SetAutoActivate(false);
 
 	Health = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 }
@@ -114,15 +120,53 @@ void AMainCharacter::ControlCamera(const FInputActionValue& Value) {
 }
 
 void AMainCharacter::EventOnAttack(const FInputActionValue& value) {
-	if (!AttackMontage) {
+	//攻撃アニメーションがアタッチされていないか、攻撃制限中なら無し
+	if (!AttackMontage || isAttacking) {
 		return;
 	}
 
 	float duration = PlayAnimMontage(AttackMontage);
-
-	//UE_LOG(LogTemp, Log, TEXT("Duration : %f"), duration);
+	isAttacking = true;		//攻撃モーション終了時に解除。これによって連続攻撃をさせない
 }
 
+//CheckKickHitから呼び出される、攻撃時何かに当たった時のコンボ加算関数
 bool AMainCharacter::CheckHitCount() {
+	//MaxCombo=3回なので、3回目のコンボでまだ音が鳴ってるなら音の更新はしない
+	//3回目のコンボは音が鳴り終えるまで待ってほしい
+	//if (Audio->IsPlaying())UE_LOG(LogTemp, Log, TEXT("IsPlaying : %d"), ComboCount);
+	if (Audio->IsPlaying() && ComboCount == 2) return false;
+
+	//音が鳴っていないときに攻撃したら1回目のコンボ
+	//音が鳴っているときに攻撃したら、コンボ加算
+	if (!Audio->IsPlaying()) {
+		ComboCount = 0;
+	}
+	else {
+		ComboCount = (ComboCount + 1) % SoundIndexArray.Num();
+	}
 	return true;
+}
+
+void AMainCharacter::PlayHitSound() {
+	Audio->SetIntParameter(FName("Sound_ID"), SoundIndexArray[ComboCount]);
+	Audio->Play();
+	GetWorldTimerManager().SetTimer(SoundStopTimerHandle, [this]()
+		{
+			Audio->SetTriggerParameter(FName("On Stop"));
+		},
+		SoundContinuousTime, false);
+}
+
+
+void AMainCharacter::StartCameraShake() {
+	// 1. PlayerControllerを取得
+	APlayerController* PC = Cast<APlayerController>(GetController());
+
+	// 2. PCとCameraManagerが存在するかチェック
+	if (PC && PC->PlayerCameraManager)
+	{
+		// 3. カメラシェイクを実行
+		// 第2引数の Scale (1.0f) を調整することで、揺れの強さを動的に変えられます
+		PC->PlayerCameraManager->StartCameraShake(UDamageCameraShake::StaticClass(), 1.0f);
+	}
 }

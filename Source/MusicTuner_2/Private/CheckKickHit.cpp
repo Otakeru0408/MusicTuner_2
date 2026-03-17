@@ -7,6 +7,7 @@
 #include "DrawDebugHelpers.h"
 #include "DamageTarget.h"
 #include "MainCharacter.h"
+#include "Sound/SoundBase.h"
 
 void UCheckKickHit::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
@@ -73,7 +74,14 @@ void UCheckKickHit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 				if (result) {
 					//UE_LOG(LogTemp, Log, TEXT("Attack Success"));
 
-					//player->StartCameraShake();//未実装
+					//攻撃hit時にカメラシェイク
+					player->StartCameraShake();
+					//打撃音も鳴らす
+					UGameplayStatics::PlaySound2D(MeshComp->GetWorld(), DamageSound);
+
+					if (isFirstHit) {
+						player->PlayHitSound();
+					}
 				}
 			}
 			HitActors.Add(actor);

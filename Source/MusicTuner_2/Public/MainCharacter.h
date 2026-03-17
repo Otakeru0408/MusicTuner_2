@@ -12,10 +12,11 @@
 class UStaticMeshComponent;
 class USpringArmComponent;
 class UCameraComponent;
-class UInputMappingContext;       // 追加する
-class UInputAction;               // 追加する
+class UInputMappingContext;
+class UInputAction;
 class UCapsuleComponent;
 class UHealthComponent;
+class UAudioComponent;
 
 UCLASS()
 class MUSICTUNER_2_API AMainCharacter : public ACharacter
@@ -34,10 +35,23 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(VisibleAnywhere, Category = "Attack")
-	int DamageCount = 0;
+	int32 DamageCount = 0;
+
+	UPROPERTY(VisibleAnywhere, Category = "Attack")
+	int32 ComboCount = 0;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Attack")
+	bool isAttacking = false;
 
 	UFUNCTION()
 	bool CheckHitCount();
+
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+	void StartCameraShake();
+
+
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+	void PlayHitSound();
 
 protected:
 	// Called when the game starts or when spawned
@@ -53,6 +67,7 @@ protected:
 	void EventOnAttack(const FInputActionValue& value);
 
 
+
 	UPROPERTY(VisibleAnywhere, Category = "Health")
 	TObjectPtr<UHealthComponent> Health;
 
@@ -63,6 +78,9 @@ protected:
 	/** SpringArmの先端に配置するカメラ */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	TObjectPtr<UCameraComponent> Camera;
+
+	UPROPERTY(VisibleAnywhere, Category = "Sound")
+	TObjectPtr<UAudioComponent> Audio;
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, Category = "Input")
@@ -95,4 +113,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	float HP = 100.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TArray<int32> SoundIndexArray = { 52,55,60 };
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	float SoundContinuousTime = 3.0f;
+
+private:
+	FTimerHandle SoundStopTimerHandle;
 };

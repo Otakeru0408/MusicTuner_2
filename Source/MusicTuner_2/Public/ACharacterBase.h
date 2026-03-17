@@ -55,6 +55,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Appearance")
 	FVector SoundRingOffset;
 
+	UPROPERTY(EditAnywhere, Category = "SoundRing")
+	int BPM;
+
+	UPROPERTY(EditAnywhere, Category = "SoundRing")
+	int RingDividedNum;
+
+	UPROPERTY(EditAnywhere, Category = "SoundRing")
+	int RingNum;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -29,14 +29,20 @@ void AACharacterBase::BeginPlay()
 	SpawnParams.Instigator = GetInstigator();
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
+	FTransform SRTrans(GetActorRotation(), GetActorLocation() + SoundRingOffset, FVector(1.0f));
+
 	UWorld* world = GetWorld();
 	if (SoundRingClass) UE_LOG(LogTemp, Display, TEXT("Instantiate"));
 	if (world && SoundRingClass) {
-		SoundRing = world->SpawnActor<ASoundRingNext>(
-			SoundRingClass, GetActorLocation() + SoundRingOffset, GetActorRotation(), SpawnParams);
+		SoundRing = world->SpawnActorDeferred<ASoundRingNext>(
+			SoundRingClass, SRTrans,
+			SpawnParams.Owner, SpawnParams.Instigator, SpawnParams.SpawnCollisionHandlingOverride);
 
 		if (SoundRing) {
 			SoundRing->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+			SoundRing->SetBPM(BPM);
+			SoundRing->SetRingDivideNum(RingDividedNum);
+			SoundRing->SetRingNum(RingNum);
 		}
 	}
 

@@ -28,4 +28,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "VALUE")
 	float SphereRadius = 50.0f;
+
+	UPROPERTY(EditAnywhere, Category = "VALUE")
+	TObjectPtr<USoundBase> DamageSound;
 };

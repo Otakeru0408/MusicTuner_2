@@ -19,6 +19,16 @@ public:
 	// Sets default values for this actor's properties
 	ASoundRingNext();
 
+	UFUNCTION()
+	void SetBPM(int num) { BPM = num; }
+
+	UFUNCTION()
+	void SetRingDivideNum(int num) { RingDivideNum = num; }
+
+	UFUNCTION()
+	void SetRingNum(int num) { RingNum = num; }
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
