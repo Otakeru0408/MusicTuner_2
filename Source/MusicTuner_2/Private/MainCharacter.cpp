@@ -206,3 +206,8 @@ float AMainCharacter::GetNowDamageNum() {
 	if (ComboCount < DamageNumByCombo.Num())nowIndex = ComboCount;
 	return DamageNumByCombo[nowIndex];
 }
+
+void AMainCharacter::OnCrystalGained() {
+	RewardCrystalNum++;
+	Widget_HP->UpdateCrystalNum(RewardCrystalNum);
+}

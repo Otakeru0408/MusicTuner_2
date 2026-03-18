@@ -33,6 +33,10 @@ void UPlayerHP::InitData(float maxHP) {
 		// 2. テキストをセット
 		HP_Text->SetText(HPFormattedText);
 	}
+
+	if (CrystalText) {
+		CrystalText->SetText(FText::FromString("Crystal : 0"));
+	}
 }
 
 void UPlayerHP::UpdateHP(float HealthPercent) {
@@ -48,4 +52,8 @@ void UPlayerHP::UpdateHP(float HealthPercent) {
 		},
 		DamageDelayTime, false
 	);
+}
+
+void UPlayerHP::UpdateCrystalNum(int num) {
+	CrystalText->SetText(FText::Format(FText::FromString("Crystal : {0}"), num));
 }

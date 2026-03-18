@@ -9,6 +9,7 @@
 #include "Components/Image.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/EditableTextBox.h"
+#include "Components/TextBlock.h"
 
 #include "PlayerHP.generated.h"
 
@@ -24,7 +25,8 @@ public:
 	UFUNCTION()
 	void InitData(float maxHP);
 
-
+	UFUNCTION()
+	void UpdateCrystalNum(int num);
 
 	UPROPERTY(meta = (BindWidget))
 	class UImage* HP_Bar;
@@ -34,6 +36,9 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	class UEditableTextBox* HP_Text;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* CrystalText;
 
 	UPROPERTY()
 	FVector2D MaxBarSize;

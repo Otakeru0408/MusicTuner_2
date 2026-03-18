@@ -60,6 +60,9 @@ public:
 	UFUNCTION()
 	float GetNowDamageNum();
 
+	UFUNCTION()
+	void OnCrystalGained();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -139,6 +142,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	float DefaultDamageNum = 1.0f;
+
+	UPROPERTY(VisibleAnywhere, Category = "Reward")
+	int RewardCrystalNum = 0;
 
 private:
 	FTimerHandle SoundStopTimerHandle;
