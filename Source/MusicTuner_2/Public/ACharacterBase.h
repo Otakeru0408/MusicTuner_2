@@ -32,9 +32,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Damage")
 	virtual bool CanDamage()override;
 
+	UFUNCTION()
+	float GetDamageNum() { return DamageNum; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	UFUNCTION()
+	void OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrupted);
 
 	UFUNCTION()
 	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
@@ -59,6 +64,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 	TArray<TObjectPtr<AActor>> PatrolLocations;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	TObjectPtr<UAnimMontage> AttackMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	float DamageNum = 10.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Damage")
+	TObjectPtr<UAnimMontage> Die_Montage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Appearance")
 	TSubclassOf<ASoundRingNext> SoundRingClass;
@@ -87,5 +101,8 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FVector GetEnemyForwardVector()const;
+
+	UFUNCTION(BlueprintCallable)
+	void StartAttackAnim();
 
 };

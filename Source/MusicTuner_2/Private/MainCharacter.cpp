@@ -200,3 +200,9 @@ void AMainCharacter::StartCameraShake() {
 		PC->PlayerCameraManager->StartCameraShake(UDamageCameraShake::StaticClass(), 1.0f);
 	}
 }
+
+float AMainCharacter::GetNowDamageNum() {
+	int nowIndex = 0;
+	if (ComboCount < DamageNumByCombo.Num())nowIndex = ComboCount;
+	return DamageNumByCombo[nowIndex];
+}

@@ -54,6 +54,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	void PlayHitSound();
 
+	UFUNCTION()
+	float GetDamageNum() { return DefaultDamageNum; }
+
+	UFUNCTION()
+	float GetNowDamageNum();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -127,6 +133,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	float SoundContinuousTime = 3.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	TArray<float> DamageNumByCombo;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	float DefaultDamageNum = 1.0f;
 
 private:
 	FTimerHandle SoundStopTimerHandle;

@@ -9,6 +9,7 @@
 #include "EnemyAIController.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/CapsuleComponent.h"
 #include "PlayerHP.h"
 
 // Sets default values
@@ -104,6 +105,35 @@ void AACharacterBase::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, co
 			SetActorRotation(LookAtRotation);
 		}
 	}
+
+	//死亡処理
+	if (!Health->GetIsAlive()) {
+		GetController()->UnPossess();
+		HPWidget->DestroyComponent();
+		SoundRing->Destroy();
+		UCapsuleComponent* MyCapsule = GetCapsuleComponent();
+		MyCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (AnimInstance && Die_Montage)
+		{
+			// モンタージュを再生
+			AnimInstance->Montage_Play(Die_Montage);
+
+			// ブレンドアウト開始時のイベントをバインド
+			FOnMontageBlendingOutStarted BlendingOutDelegate;
+			BlendingOutDelegate.BindUObject(this, &AACharacterBase::OnMontageBlendingOut);
+
+			AnimInstance->Montage_SetBlendingOutDelegate(BlendingOutDelegate, Die_Montage);
+		}
+	}
+}
+
+void AACharacterBase::OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrupted)
+{
+	GetMesh()->bPauseAnims = false;
+	GetMesh()->SetVisibility(false);
 }
 
 // Called to bind functionality to input
@@ -140,4 +170,11 @@ bool AACharacterBase::DamageToEnemy(int32 DamageValue, AActor* DamageCauser, boo
 
 bool AACharacterBase::CanDamage() {
 	return true;
+}
+
+void AACharacterBase::StartAttackAnim() {
+	if (!AttackMontage) {
+		return;
+	}
+	float duration = PlayAnimMontage(AttackMontage);
 }

@@ -267,3 +267,14 @@ float ASoundRingNext::CulcAttenuationRate() {
 
 	return FMath::Clamp(Rate, 0.0f, 1.0f);
 }
+
+void ASoundRingNext::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	for (int32 i = enemyBalls.Num() - 1; i >= 0; --i) {
+		FEnemyBall enemyball = enemyBalls[i];
+		for (int32 j = enemyball.Balls.Num() - 1; j >= 0; j++) {
+			enemyball.Balls[j]->Destroy();
+		}
+		enemyball.Balls.Empty();
+	}
+	enemyBalls.Empty();
+}

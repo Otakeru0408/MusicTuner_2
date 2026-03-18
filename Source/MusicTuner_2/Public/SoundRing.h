@@ -20,6 +20,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
 	// UE5の標準スタイル
 	UPROPERTY(VisibleAnywhere, Category = "Materials")
 	TObjectPtr<UMaterialInstanceDynamic> DynamicMaterialInst;
