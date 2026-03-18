@@ -17,8 +17,19 @@ class MUSICTUNER_2_API AEnemyAIController : public AAIController
 public:
 	AEnemyAIController();
 
+	//TargetPointアクターによって位置を指定する
+	UFUNCTION()
+	void SetPatrolPoint(const TArray<AActor*> locations);
+
+	UFUNCTION()
+	FVector GetPatrolPoint();
+
+	UFUNCTION()
+	void PopPatrolPoint();
+
 	UPROPERTY(VisibleAnywhere, Category = "AI")
 	FName TargetName = "TargetActor";
+
 protected:
 	virtual void OnPossess(APawn* InPawn)override;
 
@@ -26,4 +37,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 	TObjectPtr<UBehaviorTree> BT_Enemy;
+
+	UPROPERTY(VisibleAnywhere, Category = "AI")
+	TArray<TObjectPtr<AActor>> PatrolLocations;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "AI")
+	int NowPatrolIndex;
 };

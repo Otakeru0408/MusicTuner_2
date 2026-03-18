@@ -8,6 +8,8 @@
 #include "HealthComponent.h"
 #include "EnemyAIController.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Blueprint/UserWidget.h"
+#include "PlayerHP.h"
 
 // Sets default values
 //コンストラクタ
@@ -56,12 +58,22 @@ void AACharacterBase::BeginPlay()
 		}
 	}
 
+	//WidgetComponentにBPのWidgetを割り当てる
+	if (Widget_HP_Class) {
+		HPWidget->SetWidgetClass(Widget_HP_Class);
+		WidgetData = Cast<UPlayerHP>(HPWidget->GetUserWidgetObject());
+		WidgetData->InitData(Health->GetMaxHP());
+	}
+
 	//後のためにAIControllerとBlackboardを保持しておく
 	AIC_Enemy = Cast <AEnemyAIController>(GetController());
 	BB_Enemy = AIC_Enemy->GetBlackboardComponent();
 
 	// 自分の OnTakeAnyDamage イベントに、作成した関数を登録する
 	OnTakeAnyDamage.AddDynamic(this, &AACharacterBase::HandleTakeAnyDamage);
+
+	//AIControllerにPatrolPointを渡す
+	AIC_Enemy->SetPatrolPoint(PatrolLocations);
 }
 
 // Called every frame
@@ -74,6 +86,13 @@ void AACharacterBase::Tick(float DeltaTime)
 //ダメージを受けた時の関数
 void AACharacterBase::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser) {
 	UE_LOG(LogTemp, Log, TEXT("Damaged!"));
+
+	//HPを更新する
+	Health->UpdateHP(Damage);
+
+	//HPのUIを更新する
+	if (WidgetData)WidgetData->UpdateHP(Health->GetCurrentPercent());
+
 	//もし攻撃対象をBlackBoardに設定していなかったら設定する
 	if (BB_Enemy && AIC_Enemy) {
 		UObject* target = BB_Enemy->GetValueAsObject(AIC_Enemy->TargetName);

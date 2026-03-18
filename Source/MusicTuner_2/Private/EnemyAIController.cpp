@@ -33,3 +33,20 @@ void AEnemyAIController::InitPlayerReference() {
 		}
 	}
 }
+
+void AEnemyAIController::SetPatrolPoint(const TArray<AActor*> locations) {
+	PatrolLocations = locations;
+	if (PatrolLocations.Num() > 0) {
+		NowPatrolIndex = 0;
+	}
+}
+
+FVector AEnemyAIController::GetPatrolPoint() {
+	if (PatrolLocations.Num() > 0)return PatrolLocations[NowPatrolIndex]->GetActorLocation();
+
+	return GetPawn()->GetActorLocation();
+}
+
+void AEnemyAIController::PopPatrolPoint() {
+	NowPatrolIndex = (NowPatrolIndex + 1) % PatrolLocations.Num();
+}

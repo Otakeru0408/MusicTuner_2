@@ -15,6 +15,7 @@
 class ASoundRingNext;
 class UHealthComponent;
 class AEnemyAIController;
+class UPlayerHP;
 
 UCLASS()
 class MUSICTUNER_2_API AACharacterBase : public ACharacter, public IDamageTarget
@@ -44,11 +45,20 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 	TObjectPtr<UWidgetComponent> HPWidget;
 
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UPlayerHP> Widget_HP_Class;
+
+	UPROPERTY()
+	TObjectPtr<UPlayerHP> WidgetData;
+
 	UPROPERTY(VisibleAnywhere, Category = "AI")
 	TObjectPtr < AEnemyAIController> AIC_Enemy;
 
 	UPROPERTY(VisibleAnywhere, Category = "AI")
 	TObjectPtr < UBlackboardComponent> BB_Enemy;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TArray<TObjectPtr<AActor>> PatrolLocations;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Appearance")
 	TSubclassOf<ASoundRingNext> SoundRingClass;
