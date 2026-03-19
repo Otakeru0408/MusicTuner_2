@@ -41,6 +41,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Attack")
 	int32 ComboCount = 0;
 
+	UPROPERTY(VisibleAnywhere, Category = "Attack")
+	int32 MaxComboCount = 2;
+
 	UPROPERTY(VisibleDefaultsOnly, Category = "Attack")
 	bool isAttacking = false;
 

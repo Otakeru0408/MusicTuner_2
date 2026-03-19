@@ -186,7 +186,6 @@ FVector AACharacterBase::GetEnemyForwardVector() const {
 
 bool AACharacterBase::DamageToEnemy(int32 DamageValue, AActor* DamageCauser, bool IsComboHit) {
 	AMainCharacter* player = Cast<AMainCharacter>(DamageCauser);
-
 	if (player) {
 		UGameplayStatics::ApplyDamage(
 			this,                 // ダメージを受けるアクター（この敵自身）
@@ -195,6 +194,10 @@ bool AACharacterBase::DamageToEnemy(int32 DamageValue, AActor* DamageCauser, boo
 			DamageCauser,         // ダメージを引き起こしたアクター
 			UDamageType::StaticClass() // ダメージタイプ（基本はこれでOK）
 		);
+
+		if (player->ComboCount == player->MaxComboCount) {
+			RequestStateMontage(EEnemyState::Defending, Defend_Montage);
+		}
 
 		// ログ出力（デバッグ用）
 		//UE_LOG(LogTemp, Log, TEXT("%s took damage from CharacterBase!"), *GetName());
@@ -213,9 +216,69 @@ void AACharacterBase::StartAttackAnim() {
 	if (!AttackMontage) {
 		return;
 	}
-	float duration = PlayAnimMontage(AttackMontage);
+	float duration = RequestStateMontage(EEnemyState::Attacking, AttackMontage);
 }
 
+bool AACharacterBase::RequestStateMontage(EEnemyState NewState, UAnimMontage* MontageToPlay) {
+	// 現在の状態より優先度が低い場合は拒否
+	if (NewState < CurrentState)
+	{
+		return false;
+	}
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && MontageToPlay)
+	{
+		// アニメーション再生
+		AnimInstance->Montage_Play(MontageToPlay);
+		CurrentState = NewState;
+
+		StopAIBehavior();
+
+		// 終了時の処理をバインド
+		FOnMontageEnded EndDelegate;
+		EndDelegate.BindUObject(this, &AACharacterBase::OnMontageFinished);
+		AnimInstance->Montage_SetEndDelegate(EndDelegate, MontageToPlay);
+
+
+		return true;
+	}
+	return false;
+}
+
+void AACharacterBase::OnMontageFinished(UAnimMontage* Montage, bool bInterrupted) {
+	if (!bInterrupted)
+	{
+		CurrentState = EEnemyState::None;
+		ResumeAIBehavior();
+	}
+}
+
+void AACharacterBase::StopAIBehavior() {
+	if (AIC_Enemy)
+	{
+		// 【物理的な停止】現在実行中の移動パスをキャンセルし、足を止める
+		AIC_Enemy->StopMovement();
+
+		// 【論理的な停止】Behavior Tree の実行を一時停止する
+		if (UBrainComponent* BrainComp = AIC_Enemy->GetBrainComponent())
+		{
+			// "StateChange" という理由でロジックを一時停止（Pause）
+			BrainComp->PauseLogic(TEXT("StateChange"));
+		}
+	}
+}
+
+void AACharacterBase::ResumeAIBehavior() {
+	if (AIC_Enemy)
+	{
+		if (UBrainComponent* BrainComp = AIC_Enemy->GetBrainComponent())
+		{
+			// 一時停止していたロジックを再開
+			BrainComp->ResumeLogic(TEXT("StateChange"));
+		}
+	}
+}
 
 void AACharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 	Super::EndPlay(EndPlayReason);
