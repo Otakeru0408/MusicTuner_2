@@ -27,6 +27,7 @@ void AEnemyTarget::BeginPlay()
 {
 	Super::BeginPlay();
 	isFollowing = true;
+	InitialDirection = GetActorForwardVector();
 }
 
 // Called every frame

@@ -240,11 +240,11 @@ void ASoundRingNext::SetEnemyTargetPos() {
 void ASoundRingNext::ResetBallsPosition() {
 	FVector nowPos = GetActorLocation();
 	for (AActor* ball : enemyBalls[resetBallIndex].Balls) {
-		FVector direction = ball->GetActorLocation() - nowPos;
-		direction.Normalize();
-		ball->SetActorLocation(nowPos + direction * SoundRingRadius_Single);
 		if (AEnemyTarget* target = Cast<AEnemyTarget>(ball)) {
 			target->isFollowing = true;
+			FVector direction = target->GetInitialDirection();
+			direction.Normalize();
+			target->SetActorLocation(nowPos + direction * SoundRingRadius_Single);
 		}
 	}
 

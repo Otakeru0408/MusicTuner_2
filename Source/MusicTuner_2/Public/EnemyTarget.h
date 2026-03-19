@@ -29,9 +29,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Damage")
 	virtual bool CanDamage()override;
 
+	UFUNCTION(BlueprintCallable)
+	FVector GetInitialDirection() { return InitialDirection; }
+
 	//‚±‚ÌBall‚ªEnemy‚É]‚Á‚Ä‚¢‚é‚©BR‚ç‚ê‚ÄˆÚ“®’†‚ÍFalse‚É‚È‚éB
 	UPROPERTY()
 	bool isFollowing = true;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -95,6 +99,9 @@ protected:
 
 	UPROPERTY()
 	bool bIsShooting = false;
+
+	UPROPERTY()
+	FVector InitialDirection = FVector(0.f);
 
 
 public:
