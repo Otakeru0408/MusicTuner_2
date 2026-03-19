@@ -243,7 +243,9 @@ void ASoundRingNext::ResetBallsPosition() {
 		FVector direction = ball->GetActorLocation() - nowPos;
 		direction.Normalize();
 		ball->SetActorLocation(nowPos + direction * SoundRingRadius_Single);
-
+		if (AEnemyTarget* target = Cast<AEnemyTarget>(ball)) {
+			target->isFollowing = true;
+		}
 	}
 
 	resetBallIndex = (resetBallIndex + 1) % enemyBalls.Num();

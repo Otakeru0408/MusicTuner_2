@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "DamageTarget.h"
 #include "Components/SphereComponent.h"
+#include "Curves/CurveVector.h"
 
 #include "EnemyTarget.generated.h"
 
@@ -27,6 +28,10 @@ public:
 	virtual bool DamageToEnemy(int32 DamageValue, AActor* DamageCauser, bool IsComboHit)override;
 	UFUNCTION(BlueprintCallable, Category = "Damage")
 	virtual bool CanDamage()override;
+
+	//Ç±ÇÃBallÇ™EnemyÇ…è]Ç¡ÇƒÇ¢ÇÈÇ©ÅBèRÇÁÇÍÇƒà⁄ìÆíÜÇÕFalseÇ…Ç»ÇÈÅB
+	UPROPERTY()
+	bool isFollowing = true;
 
 protected:
 	// Called when the game starts or when spawned
@@ -68,6 +73,29 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Parameter")
 	TObjectPtr<USoundBase> AttackSound;
+
+	UPROPERTY(EditAnywhere, Category = "Parameter")
+	TObjectPtr<UCurveVector> VectorCurve;
+
+	UPROPERTY(EditAnywhere, Category = "Parameter")
+	float ShootingHeight = 100.f;
+
+
+	UPROPERTY(EditAnywhere, Category = "Parameter")
+	float ShootingPassTime = 0.3f;
+
+	UPROPERTY()
+	FVector ShootingStartPoint = FVector(0.0f);
+
+	UPROPERTY()
+	FVector ShootingEndPoint = FVector(0.0f);
+
+	UPROPERTY()
+	float ShootingAlpha = 0.0f;
+
+	UPROPERTY()
+	bool bIsShooting = false;
+
 
 public:
 	// Called every frame
