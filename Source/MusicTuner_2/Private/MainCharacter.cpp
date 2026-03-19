@@ -16,6 +16,7 @@
 #include "DamageCameraShake.h"
 #include "Blueprint/UserWidget.h"
 #include "PlayerHP.h"
+#include "Widget_PlayerDeath.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -73,6 +74,8 @@ void AMainCharacter::BeginPlay()
 			Widget_HP->InitData(Health->GetMaxHP());
 		}
 	}
+
+	OnPlayerDied.AddDynamic(this, &AMainCharacter::PlayerDeathLeastener);
 }
 
 // Called every frame
@@ -93,7 +96,10 @@ float AMainCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 		//HealthCOmponentでなにかTakeDamageに登録している関数があるぞ？
 		Health->UpdateHP(ActualDamage);
 
-		Widget_HP->UpdateHP(Health->GetCurrentPercent());
+		Widget_HP->UpdateHP(Health->GetCurrentPercent(), Health->GetCurrectHP());
+
+		//HPが0以下なら死亡通知を発火
+		if (!Health->GetIsAlive())OnPlayerDied.Broadcast();
 	}
 
 	// 最終的なダメージ量を返すのが決まり
@@ -210,4 +216,35 @@ float AMainCharacter::GetNowDamageNum() {
 void AMainCharacter::OnCrystalGained() {
 	RewardCrystalNum++;
 	Widget_HP->UpdateCrystalNum(RewardCrystalNum);
+}
+
+void AMainCharacter::PlayerDeathLeastener() {
+	GetWorldTimerManager().SetTimerForNextTick(this, &AMainCharacter::OnPlayerDeath);
+}
+
+void AMainCharacter::OnPlayerDeath() {
+	//入力を受け付けなくする
+	if (APlayerController* controller = Cast<APlayerController>(GetController())) {
+		DisableInput(controller);
+		controller->bShowMouseCursor = true;
+	}
+
+	//Meshをラグドール化する
+	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
+	GetMesh()->SetSimulatePhysics(true);
+
+	//死亡時のUIを表示する
+	if (Widget_Death_Class) {
+		Widget_Death = CreateWidget<UWidget_PlayerDeath>(GetWorld(), Widget_Death_Class);
+		if (Widget_Death) {
+			Widget_Death->AddToViewport();
+
+			Widget_Death->Initialize();
+		}
+	}
+
+}
+
+bool AMainCharacter::GetIsAlive() {
+	return Health->GetIsAlive();
 }

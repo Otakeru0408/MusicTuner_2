@@ -20,7 +20,7 @@ class MUSICTUNER_2_API UPlayerHP : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void UpdateHP(float HealthPercent);
+	void UpdateHP(float HealthPercent, float HP);
 
 	UFUNCTION()
 	void InitData(float maxHP);

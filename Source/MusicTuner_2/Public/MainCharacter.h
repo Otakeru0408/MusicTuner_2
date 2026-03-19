@@ -18,6 +18,10 @@ class UCapsuleComponent;
 class UHealthComponent;
 class UAudioComponent;
 class UPlayerHP;
+class UWidget_PlayerDeath;
+
+//プレイヤー死亡時に発動するデリゲート
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerDied);
 
 UCLASS()
 class MUSICTUNER_2_API AMainCharacter : public ACharacter
@@ -34,6 +38,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnPlayerDied OnPlayerDied;
 
 	UPROPERTY(VisibleAnywhere, Category = "Attack")
 	int32 DamageCount = 0;
@@ -69,6 +76,9 @@ public:
 	UFUNCTION()
 	float GetKnockBackPower() { return KnockBackPower; }
 
+	UFUNCTION()
+	bool GetIsAlive();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -86,11 +96,25 @@ protected:
 	}
 	void EventOnAttack(const FInputActionValue& value);
 
+	//いったん仮に死亡通知を受け取る関数
+	UFUNCTION()
+	void PlayerDeathLeastener();
+
+	//実際に死亡処理を行う関数
+	UFUNCTION()
+	void OnPlayerDeath();
+
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	TSubclassOf<UPlayerHP> Widget_HP_Class;
 
 	UPROPERTY()
 	TObjectPtr<UPlayerHP> Widget_HP;
+
+	UPROPERTY(EditAnywhere, Category = "Widget")
+	TSubclassOf<UWidget_PlayerDeath> Widget_Death_Class;
+
+	UPROPERTY()
+	TObjectPtr<UWidget_PlayerDeath> Widget_Death;
 
 	UPROPERTY(VisibleAnywhere, Category = "Health")
 	TObjectPtr<UHealthComponent> Health;

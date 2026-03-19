@@ -76,6 +76,11 @@ void AACharacterBase::BeginPlay()
 
 	//AIControllerにPatrolPointを渡す
 	AIC_Enemy->SetPatrolPoint(PatrolLocations);
+
+	//Playerが死亡したらTargetを外す処理をバインドしておく
+	if (AMainCharacter* player = Cast<AMainCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))) {
+		player->OnPlayerDied.AddDynamic(this, &AACharacterBase::UnBindAITarget);
+	}
 }
 
 // Called every frame
@@ -93,7 +98,7 @@ void AACharacterBase::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, co
 	Health->UpdateHP(Damage);
 
 	//HPのUIを更新する
-	if (WidgetData)WidgetData->UpdateHP(Health->GetCurrentPercent());
+	if (WidgetData)WidgetData->UpdateHP(Health->GetCurrentPercent(), Health->GetCurrectHP());
 
 	//もし攻撃対象をBlackBoardに設定していなかったら設定する
 	if (BB_Enemy && AIC_Enemy) {
@@ -294,4 +299,12 @@ void AACharacterBase::ResumeAIBehavior() {
 void AACharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 	Super::EndPlay(EndPlayReason);
 	UE_LOG(LogTemp, Log, TEXT("Destroy Enemy"));
+}
+
+void AACharacterBase::UnBindAITarget() {
+	if (BB_Enemy && AIC_Enemy) {
+		BB_Enemy->SetValueAsObject(AIC_Enemy->TargetName, nullptr);
+
+		UE_LOG(LogTemp, Log, TEXT("UnBind Target!"));
+	}
 }

@@ -39,7 +39,7 @@ void UPlayerHP::InitData(float maxHP) {
 	}
 }
 
-void UPlayerHP::UpdateHP(float HealthPercent) {
+void UPlayerHP::UpdateHP(float HealthPercent, float HP) {
 	if (HP_Bar_Slot) {
 		HP_Bar_Slot->SetSize(FVector2D(MaxBarSize.X * HealthPercent, MaxBarSize.Y));
 	}
@@ -52,6 +52,16 @@ void UPlayerHP::UpdateHP(float HealthPercent) {
 		},
 		DamageDelayTime, false
 	);
+
+	if (HP_Text) {
+		FText HPFormattedText = FText::Format(
+			FText::FromString("HP : {0}"),
+			FText::AsNumber(FMath::CeilToInt(HP))
+		);
+
+		// 2. テキストをセット
+		HP_Text->SetText(HPFormattedText);
+	}
 }
 
 void UPlayerHP::UpdateCrystalNum(int num) {

@@ -64,16 +64,18 @@ void UEnemy_CheckAttackHit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSe
 			if (HitActors.Contains(actor))continue;	//¡‰ñ‚ÌUŒ‚‚Å‚·‚Å‚Éƒqƒbƒg‚µ‚Ä‚¢‚é‚à‚Ì‚É‚ÍUŒ‚‚µ‚È‚¢
 
 			if (AMainCharacter* target = Cast<AMainCharacter>(actor)) {
-				UGameplayStatics::ApplyDamage(
-					target,
-					origin->GetDamageNum(),
-					origin->GetController(),
-					origin,
-					UDamageType::StaticClass()
-				);
+				if (target->GetIsAlive()) {
+					UGameplayStatics::ApplyDamage(
+						target,
+						origin->GetDamageNum(),
+						origin->GetController(),
+						origin,
+						UDamageType::StaticClass()
+					);
 
-				if (DamageSound)UGameplayStatics::PlaySound2D(GetWorld(), DamageSound);
-				target->StartCameraShake();
+					if (DamageSound)UGameplayStatics::PlaySound2D(MeshComp->GetWorld(), DamageSound);
+					target->StartCameraShake();
+				}
 
 			}
 			HitActors.Add(actor);

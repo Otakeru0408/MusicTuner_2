@@ -81,6 +81,9 @@ protected:
 	UFUNCTION()
 	void ResumeAIBehavior();
 
+	UFUNCTION()
+	void UnBindAITarget();
+
 	UPROPERTY(VisibleAnywhere, Category = "Health")
 	TObjectPtr<UHealthComponent> Health;
 

@@ -86,7 +86,7 @@ void AEnemyTarget::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (OtherActor && (OtherActor != this))
 	{
 		AMainCharacter* player = Cast<AMainCharacter>(OtherActor);
-		if (player && DamageTime <= 0) {
+		if (player && DamageTime <= 0 && player->GetIsAlive()) {
 			UGameplayStatics::ApplyDamage(
 				player,
 				DamageNum,
