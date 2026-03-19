@@ -67,7 +67,7 @@ void UCheckKickHit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 				if (!target->CanDamage()) continue;	//相手にダメージを与えられるかチェック
 
 				player->DamageCount++;	//この１撃でいくつのActorにヒットしたか計算
-				bool isFirstHit = player->CheckHitCount();	//この攻撃でコンボがつながるか(未実装)
+				bool isNotThirdAfterHit = player->CheckHitCount();	//この攻撃でコンボがつながるか(未実装)
 
 				//相手に攻撃する
 				bool result = target->DamageToEnemy(player->GetDamageNum(), MeshComp->GetOwner(), true);
@@ -79,7 +79,8 @@ void UCheckKickHit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 					//打撃音も鳴らす
 					UGameplayStatics::PlaySound2D(MeshComp->GetWorld(), DamageSound);
 
-					if (isFirstHit) {
+					//3コンボ目より後の攻撃はダメージが通るだけで音を鳴らさない。
+					if (isNotThirdAfterHit) {
 						player->PlayHitSound();
 					}
 				}

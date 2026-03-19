@@ -66,6 +66,9 @@ public:
 	UFUNCTION()
 	void OnCrystalGained();
 
+	UFUNCTION()
+	float GetKnockBackPower() { return KnockBackPower; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -145,6 +148,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	float DefaultDamageNum = 1.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	float KnockBackPower = 200.0f;
 
 	UPROPERTY(VisibleAnywhere, Category = "Reward")
 	int RewardCrystalNum = 0;

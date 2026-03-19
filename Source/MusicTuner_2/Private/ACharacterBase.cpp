@@ -197,6 +197,7 @@ bool AACharacterBase::DamageToEnemy(int32 DamageValue, AActor* DamageCauser, boo
 
 		if (player->ComboCount == player->MaxComboCount) {
 			RequestStateMontage(EEnemyState::Defending, Defend_Montage);
+			ApplyKnockBack(player->GetActorLocation(), player->GetKnockBackPower());
 		}
 
 		// ログ出力（デバッグ用）
@@ -210,6 +211,16 @@ bool AACharacterBase::DamageToEnemy(int32 DamageValue, AActor* DamageCauser, boo
 
 bool AACharacterBase::CanDamage() {
 	return true;
+}
+
+void AACharacterBase::ApplyKnockBack(FVector SourceLocation, float Stlength) {
+	FVector KBVector = GetActorLocation() - SourceLocation;
+	KBVector.Z = 0;		//水平方向だけのベクトルにする
+	KBVector.Normalize();
+
+	//Enemyにノックバックのための力を加える
+	LaunchCharacter(KBVector * Stlength, true, true);
+
 }
 
 void AACharacterBase::StartAttackAnim() {

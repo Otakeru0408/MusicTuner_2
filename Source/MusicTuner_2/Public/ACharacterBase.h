@@ -54,6 +54,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool RequestStateMontage(EEnemyState NewState, UAnimMontage* MontageToPlay);
 
+	UFUNCTION()
+	void ApplyKnockBack(FVector SourceLocation, float Stlength);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
