@@ -33,9 +33,6 @@ void ARewardCrystal::BeginPlay()
 			this,
 			&ARewardCrystal::OnMeshBeginOverlap
 		);
-
-		// SphereCollision‚ªŒ©‚Â‚©‚Á‚½ê‡‚ÌŠm”FƒƒO
-		UE_LOG(LogTemp, Warning, TEXT("SphereCollision found and saved to variable: %s"), *GetName());
 	}
 }
 

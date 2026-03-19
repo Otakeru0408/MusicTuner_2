@@ -28,10 +28,14 @@ public:
 	UFUNCTION()
 	void SetRingNum(int num) { RingNum = num; }
 
+	UFUNCTION()
+	void DestroyMySelf();
+
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 

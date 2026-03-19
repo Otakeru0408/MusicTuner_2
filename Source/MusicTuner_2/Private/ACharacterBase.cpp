@@ -86,7 +86,7 @@ void AACharacterBase::Tick(float DeltaTime)
 
 //ダメージを受けた時の関数
 void AACharacterBase::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser) {
-	UE_LOG(LogTemp, Log, TEXT("Damaged!"));
+	//UE_LOG(LogTemp, Log, TEXT("Damaged!"));
 
 	//HPを更新する
 	Health->UpdateHP(Damage);
@@ -108,9 +108,14 @@ void AACharacterBase::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, co
 
 	//死亡処理
 	if (!Health->GetIsAlive()) {
-		GetController()->UnPossess();
-		HPWidget->DestroyComponent();
-		SoundRing->Destroy();
+		//AIControllerを外して動きを止める
+		GetController()->Destroy();
+
+		//付属のActor達をDestroyする
+		if (HPWidget)HPWidget->DestroyComponent();
+		if (SoundRing)SoundRing->DestroyMySelf();
+
+		//Enemy本体はまだdestroyしないが当たり判定をなくす
 		UCapsuleComponent* MyCapsule = GetCapsuleComponent();
 		MyCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -134,6 +139,7 @@ void AACharacterBase::OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrup
 {
 	GetMesh()->bPauseAnims = false;
 	GetMesh()->SetVisibility(false);
+	Destroy();
 }
 
 // Called to bind functionality to input
@@ -177,4 +183,10 @@ void AACharacterBase::StartAttackAnim() {
 		return;
 	}
 	float duration = PlayAnimMontage(AttackMontage);
+}
+
+
+void AACharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	Super::EndPlay(EndPlayReason);
+	UE_LOG(LogTemp, Log, TEXT("Destroy Enemy"));
 }
