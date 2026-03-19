@@ -269,14 +269,15 @@ float ASoundRingNext::CulcAttenuationRate() {
 }
 
 void ASoundRingNext::DestroyMySelf() {
-	UE_LOG(LogTemp, Log, TEXT("Destroy MySelf"));
+	//•ÛŽ‚µ‚Ä‚¢‚é‚·‚×‚Ä‚Ìƒ{[ƒ‹‚ðíœ‚µ‚Ä‚©‚çŽ©g‚ðíœ‚·‚é
 	for (int i = enemyBalls.Num() - 1; i >= 0; i--) {
 		TArray<TObjectPtr<AActor>>& balls = enemyBalls[i].Balls;
 		for (int j = enemyBalls[i].Balls.Num() - 1; j >= 0; j--) {
-			UE_LOG(LogTemp, Log, TEXT("Destroy : %s"), *balls[j]->GetName());
+			//UE_LOG(LogTemp, Log, TEXT("Destroy : %s"), *balls[j]->GetName());
 			balls[j]->Destroy();
 		}
 	}
+
 	Destroy();
 }
 

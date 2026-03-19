@@ -11,6 +11,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "PlayerHP.h"
+#include "RewardCrystal.h"
 
 // Sets default values
 //コンストラクタ
@@ -139,6 +140,36 @@ void AACharacterBase::OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrup
 {
 	GetMesh()->bPauseAnims = false;
 	GetMesh()->SetVisibility(false);
+	if (Die_Particle) {
+		UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
+			Die_Particle,
+			GetMesh(),
+			NAME_None,
+			FVector(0.f),
+			FRotator(0.f),
+			EAttachLocation::SnapToTarget,
+			true
+		);
+
+		//ちょっとめんどいけど、Dieパーティクルが終わったらEnemyをDestroyする
+		if (NiagaraComp) {
+			NiagaraComp->OnSystemFinished.AddDynamic(
+				this,
+				&AACharacterBase::OnDieParticleFinished
+			);
+		}
+
+		//リワードのクリスタルを放出する
+		for (int i = 0; i < RewardNum; i++) {
+			ARewardCrystal* reward = GetWorld()->SpawnActor<ARewardCrystal>(
+				RewardItem, GetActorLocation(), GetActorRotation());
+
+			reward->StartSpreadOut();
+		}
+	}
+}
+
+void AACharacterBase::OnDieParticleFinished(UNiagaraComponent* PSystem) {
 	Destroy();
 }
 

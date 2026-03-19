@@ -17,6 +17,10 @@ public:
 	// Sets default values for this actor's properties
 	ARewardCrystal();
 
+	//ƒŠƒ[ƒh‚ª”ò‚Ño‚é‚æ‚¤‚É‚·‚éŠÖ”
+	UFUNCTION()
+	void StartSpreadOut();
+
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<USoundBase>  GainedSound;
 
@@ -29,6 +33,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	TObjectPtr<UStaticMeshComponent> CrystalMesh;
+
+	UPROPERTY(EditAnywhere, Category = "Mesh")
+	TObjectPtr<UStaticMesh> MeshBody;
 
 	UPROPERTY(VisibleAnywhere, Category = "Collision")
 	TObjectPtr<USphereComponent> SphereCollision;

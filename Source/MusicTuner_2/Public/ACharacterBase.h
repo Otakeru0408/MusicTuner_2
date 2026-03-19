@@ -9,6 +9,8 @@
 #include "DamageTarget.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/WidgetComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 #include "ACharacterBase.generated.h"
 
@@ -16,6 +18,7 @@ class ASoundRingNext;
 class UHealthComponent;
 class AEnemyAIController;
 class UPlayerHP;
+class ARewardCrystal;
 
 UCLASS()
 class MUSICTUNER_2_API AACharacterBase : public ACharacter, public IDamageTarget
@@ -42,6 +45,9 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	UFUNCTION()
 	void OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrupted);
+
+	UFUNCTION()
+	void OnDieParticleFinished(UNiagaraComponent* PSystem);
 
 	UFUNCTION()
 	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
@@ -76,6 +82,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Damage")
 	TObjectPtr<UAnimMontage> Die_Montage;
 
+	UPROPERTY(EditAnywhere, Category = "Damage")
+	TObjectPtr<UNiagaraSystem> Die_Particle;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Appearance")
 	TSubclassOf<ASoundRingNext> SoundRingClass;
 
@@ -84,6 +93,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Appearance")
 	FVector SoundRingOffset;
+
+	UPROPERTY(EditAnywhere, Category = "Appearance")
+	int RewardNum = 5;
+
+	UPROPERTY(EditAnywhere, Category = "Appearance")
+	TSubclassOf <ARewardCrystal> RewardItem;
 
 	UPROPERTY(EditAnywhere, Category = "SoundRing")
 	int BPM;

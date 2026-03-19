@@ -14,7 +14,6 @@ ARewardCrystal::ARewardCrystal()
 	CrystalMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	RootComponent = CrystalMesh;
 	CrystalMesh->SetCollisionProfileName(TEXT("PickupProfile"));
-	//CrystalMesh->SetGenerateOverlapEvents(false);
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
 	SphereCollision->SetupAttachment(RootComponent);
@@ -52,5 +51,12 @@ void ARewardCrystal::OnMeshBeginOverlap(UPrimitiveComponent* OverlappedComponent
 			UGameplayStatics::PlaySound2D(GetWorld(), GainedSound);
 			Destroy();
 		}
+	}
+}
+
+void ARewardCrystal::StartSpreadOut() {
+	if (CrystalMesh->IsSimulatingPhysics()) {
+		FVector impulse = FVector(FMath::FRandRange(-100.f, 100.f), FMath::FRandRange(-100.f, 100.f), 500.f);
+		CrystalMesh->AddImpulse(impulse, NAME_None, true);
 	}
 }
