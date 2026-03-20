@@ -87,6 +87,7 @@ protected:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 	void ControlMovement(const FInputActionValue& Value);
+	void DodgeRollMovement(const FInputActionValue& Value);
 	void ControlCamera(const FInputActionValue& Value);
 	void SetMoveToDash(const FInputActionValue& Value) {
 		GetCharacterMovement()->MaxWalkSpeed = 800.0f;
@@ -150,6 +151,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UAnimMontage> AttackMontage;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UAnimMontage> DodgeRollMontage;
+
 	UPROPERTY(EditAnywhere, Category = "Input")
 	float Speed = 50.0f;
 
@@ -178,6 +182,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Reward")
 	int RewardCrystalNum = 0;
+
+	UPROPERTY()
+	TArray<float> DoubleClickTimeWASD = { 0.f,0.f,0.f,0.f };
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	float DoubleClickLimitTime = 0.25f;
 
 private:
 	FTimerHandle SoundStopTimerHandle;

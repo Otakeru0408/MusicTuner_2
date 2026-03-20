@@ -114,6 +114,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(ControlAction, ETriggerEvent::Triggered, this, &AMainCharacter::ControlMovement);
+		EnhancedInputComponent->BindAction(ControlAction, ETriggerEvent::Started, this, &AMainCharacter::DodgeRollMovement);
 		EnhancedInputComponent->BindAction(CameraRotateAction, ETriggerEvent::Triggered, this, &AMainCharacter::ControlCamera);
 		EnhancedInputComponent->BindAction(DashFlag, ETriggerEvent::Started, this, &AMainCharacter::SetMoveToDash);
 		EnhancedInputComponent->BindAction(DashFlag, ETriggerEvent::Completed, this, &AMainCharacter::SetMoveToWalk);
@@ -136,7 +137,50 @@ void AMainCharacter::ControlMovement(const FInputActionValue& Value) {
 		// SetActorLocation の代わりに AddMovementInput を使用
 		AddMovementInput(ForwardDirection, V.X);
 		AddMovementInput(RightDirection, V.Y);
+
 	}
+}
+
+void AMainCharacter::DodgeRollMovement(const FInputActionValue& Value) {
+	const FVector2D V = Value.Get<FVector2D>();
+
+	if (Controller != nullptr)
+	{
+		// カメラの向きに基づいた前方方向を計算
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+		// SetActorLocation の代わりに AddMovementInput を使用
+		AddMovementInput(ForwardDirection, V.X);
+		AddMovementInput(RightDirection, V.Y);
+
+		//DodgeRollの処理
+		int inputVal = 0;	//WASDのいずれであるか
+		if (V.Y > 0)inputVal = 0;		//W
+		else if (V.Y < 0)inputVal = 2;	//S
+		else if (V.X > 0)inputVal = 3;	//D
+		else if (V.X < 0)inputVal = 1;	//A
+
+		UE_LOG(LogTemp, Log, TEXT("dodgeroll time:%f"), GetWorld()->GetTimeSeconds() - DoubleClickTimeWASD[inputVal]);
+
+		if (GetWorld()->GetTimeSeconds() - DoubleClickTimeWASD[inputVal] < DoubleClickLimitTime) {
+			//DodgeRollする方向に体を向かせる
+			FVector inputDirection = ForwardDirection * V.X + RightDirection * V.Y;
+			inputDirection.Normalize();
+			SetActorRotation(FRotationMatrix::MakeFromX(inputDirection).Rotator());
+
+			//Montageをplayする
+			float duration = PlayAnimMontage(DodgeRollMontage);
+		}
+		else {
+			DoubleClickTimeWASD[inputVal] = GetWorld()->GetTimeSeconds();
+		}
+
+	}
+
 }
 
 void AMainCharacter::ControlCamera(const FInputActionValue& Value) {
