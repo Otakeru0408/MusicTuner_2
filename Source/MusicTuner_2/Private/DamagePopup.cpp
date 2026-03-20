@@ -20,12 +20,16 @@ ADamagePopup::ADamagePopup()
 void ADamagePopup::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ADamagePopup::StartAnimation(int32 damageNum, int32 comboIndex) {
 	if (Widget_Damage_Class) {
 		DamageWidget->SetWidgetClass(Widget_Damage_Class);
 		WidgetData = Cast<UWidget_DamageText>(DamageWidget->GetUserWidgetObject());
 		WidgetData->OnMyAnimationFinished.AddDynamic(this, &ADamagePopup::OnAnimFinished);
 
-		WidgetData->PlayAnim(DamageNum, ComboIndex);
+		WidgetData->PlayAnim(damageNum, comboIndex);
+
 	}
 }
 

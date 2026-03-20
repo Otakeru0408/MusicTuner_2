@@ -21,6 +21,7 @@ class AEnemyAIController;
 class UPlayerHP;
 class ARewardCrystal;
 class USensor;
+class ADamagePopup;
 
 UENUM(BlueprintType)
 enum class EEnemyState : uint8
@@ -104,6 +105,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UPlayerHP> Widget_HP_Class;
 
+	UPROPERTY(EditAnywhere, Category = "UI")
+	float DamageTextOffset_Z = 50.0f;
+
 	UPROPERTY()
 	TObjectPtr<UPlayerHP> WidgetData;
 
@@ -127,6 +131,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
 	EEnemyState CurrentState = EEnemyState::Idle;
+
+	UPROPERTY(EditAnywhere, Category = "Damage")
+	TSubclassOf <ADamagePopup> DamagePopupUI;
 
 	UPROPERTY(EditAnywhere, Category = "Damage")
 	TObjectPtr<UAnimMontage> Die_Montage;

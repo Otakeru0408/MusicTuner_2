@@ -13,6 +13,7 @@
 #include "PlayerHP.h"
 #include "RewardCrystal.h"
 #include "Sensor.h"
+#include "DamagePopup.h"
 
 // Sets default values
 //コンストラクタ
@@ -101,6 +102,26 @@ void AACharacterBase::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, co
 
 	//HPのUIを更新する
 	if (WidgetData)WidgetData->UpdateHP(Health->GetCurrentPercent(), Health->GetCurrectHP());
+
+	//ダメージのUIを表示する
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = GetInstigator();
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	FTransform UITrans(GetActorRotation(), GetActorLocation() + FVector(0, 0, DamageTextOffset_Z), GetActorScale());
+
+	AMainCharacter* player = Cast<AMainCharacter>(DamageCauser);
+
+	if (DamagePopupUI) {
+		ADamagePopup* popup = GetWorld()->SpawnActor<ADamagePopup>(
+			DamagePopupUI, UITrans, SpawnParams
+		);
+		if (popup) {
+			UE_LOG(LogTemp, Log, TEXT("Generate Popup"));
+			popup->StartAnimation(Damage, player->ComboCount);
+		}
+	}
 
 	//もし攻撃対象をBlackBoardに設定していなかったら設定する
 	if (BB_Enemy && AIC_Enemy) {
@@ -206,9 +227,6 @@ bool AACharacterBase::DamageToEnemy(int32 DamageValue, AActor* DamageCauser, boo
 			RequestStateMontage(EEnemyState::Defending, Defend_Montage);
 			ApplyKnockBack(player->GetActorLocation(), player->GetKnockBackPower());
 		}
-
-		// ログ出力（デバッグ用）
-		//UE_LOG(LogTemp, Log, TEXT("%s took damage from CharacterBase!"), *GetName());
 
 		return true;
 	}

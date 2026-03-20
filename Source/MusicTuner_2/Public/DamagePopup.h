@@ -19,15 +19,13 @@ public:
 	// Sets default values for this actor's properties
 	ADamagePopup();
 
-	UPROPERTY(VisibleAnywhere, Category = "UI")
-	int32 DamageNum = 0;
-
-	UPROPERTY(VisibleAnywhere, Category = "UI")
-	int32 ComboIndex = -1;
+	UFUNCTION()
+	void StartAnimation(int32 damageNum, int32 comboIndex);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
 
 	UFUNCTION()
 	void OnAnimFinished();

@@ -4,6 +4,7 @@
 #include "Widget_DamageText.h"
 
 void UWidget_DamageText::PlayAnim(int DamageNum, int ComboIndex) {
+
 	if (damageText) {
 		damageText->SetText(FText::AsNumber(DamageNum));
 	}
@@ -31,6 +32,7 @@ void UWidget_DamageText::PlayAnim(int DamageNum, int ComboIndex) {
 	BindToAnimationFinished(nowAnim, EndEvent);
 
 	PlayAnimation(nowAnim);
+
 }
 
 void UWidget_DamageText::Internal_OnFinished()
