@@ -12,6 +12,7 @@
 #include "Components/CapsuleComponent.h"
 #include "PlayerHP.h"
 #include "RewardCrystal.h"
+#include "Sensor.h"
 
 // Sets default values
 //コンストラクタ
@@ -27,9 +28,10 @@ AACharacterBase::AACharacterBase()
 	// メッシュやルートにアタッチ（頭上に配置したい場合は Mesh にアタッチするのが一般的）
 	HPWidget->SetupAttachment(GetMesh());
 
-	// デフォルトの設定をコードで入れておくとBPで楽になります
 	HPWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	HPWidget->SetDrawAtDesiredSize(true);
+
+	Sensor = CreateDefaultSubobject<USensor>(TEXT("AC_Sensor"));
 }
 
 // Called when the game starts or when spawned
@@ -307,4 +309,19 @@ void AACharacterBase::UnBindAITarget() {
 
 		UE_LOG(LogTemp, Log, TEXT("UnBind Target!"));
 	}
+}
+
+AActor* AACharacterBase::CheckSensor() {
+	bool isHit = Sensor->CheckSensor(CheckHitResults);
+
+	if (isHit) {
+		for (int i = 0; i < CheckHitResults.Num(); i++) {
+			AMainCharacter* player = Cast<AMainCharacter>(CheckHitResults[i]);
+			if (player) {
+				return player;
+			}
+		}
+	}
+
+	return nullptr;
 }

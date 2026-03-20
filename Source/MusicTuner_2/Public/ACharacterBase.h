@@ -20,6 +20,7 @@ class UHealthComponent;
 class AEnemyAIController;
 class UPlayerHP;
 class ARewardCrystal;
+class USensor;
 
 UENUM(BlueprintType)
 enum class EEnemyState : uint8
@@ -57,6 +58,14 @@ public:
 	UFUNCTION()
 	void ApplyKnockBack(FVector SourceLocation, float Stlength);
 
+
+	UFUNCTION()
+	AActor* CheckSensor();
+
+
+	UPROPERTY(VisibleAnywhere, Category = "AI")
+	TObjectPtr<USensor> Sensor;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -84,6 +93,8 @@ protected:
 	UFUNCTION()
 	void UnBindAITarget();
 
+
+
 	UPROPERTY(VisibleAnywhere, Category = "Health")
 	TObjectPtr<UHealthComponent> Health;
 
@@ -104,6 +115,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 	TArray<TObjectPtr<AActor>> PatrolLocations;
+
+	UPROPERTY(VisibleAnywhere, Category = "AI")
+	TArray<TObjectPtr<AActor>> CheckHitResults;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	TObjectPtr<UAnimMontage> AttackMontage;
