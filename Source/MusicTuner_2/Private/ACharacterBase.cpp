@@ -113,6 +113,7 @@ void AACharacterBase::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, co
 
 	AMainCharacter* player = Cast<AMainCharacter>(DamageCauser);
 
+	//攻撃を受けた時にそのダメージ数を表示
 	if (DamagePopupUI) {
 		ADamagePopup* popup = GetWorld()->SpawnActor<ADamagePopup>(
 			DamagePopupUI, UITrans, SpawnParams
@@ -121,6 +122,12 @@ void AACharacterBase::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, co
 			UE_LOG(LogTemp, Log, TEXT("Generate Popup"));
 			popup->StartAnimation(Damage, player->ComboCount);
 		}
+	}
+
+	//Combo3撃目はノックバックする
+	if (player->ComboCount == player->MaxComboCount) {
+		RequestStateMontage(EEnemyState::Defending, Defend_Montage);
+		ApplyKnockBack(player->GetActorLocation(), player->GetKnockBackPower());
 	}
 
 	//もし攻撃対象をBlackBoardに設定していなかったら設定する
@@ -222,11 +229,6 @@ bool AACharacterBase::DamageToEnemy(int32 DamageValue, AActor* DamageCauser, boo
 			DamageCauser,         // ダメージを引き起こしたアクター
 			UDamageType::StaticClass() // ダメージタイプ（基本はこれでOK）
 		);
-
-		if (player->ComboCount == player->MaxComboCount) {
-			RequestStateMontage(EEnemyState::Defending, Defend_Montage);
-			ApplyKnockBack(player->GetActorLocation(), player->GetKnockBackPower());
-		}
 
 		return true;
 	}

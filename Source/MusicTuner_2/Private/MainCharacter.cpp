@@ -164,8 +164,6 @@ void AMainCharacter::DodgeRollMovement(const FInputActionValue& Value) {
 		else if (V.X > 0)inputVal = 3;	//D
 		else if (V.X < 0)inputVal = 1;	//A
 
-		UE_LOG(LogTemp, Log, TEXT("dodgeroll time:%f"), GetWorld()->GetTimeSeconds() - DoubleClickTimeWASD[inputVal]);
-
 		if (GetWorld()->GetTimeSeconds() - DoubleClickTimeWASD[inputVal] < DoubleClickLimitTime) {
 			//DodgeRoll‚·‚é•ûŒü‚É‘Ì‚ðŒü‚©‚¹‚é
 			FVector inputDirection = ForwardDirection * V.X + RightDirection * V.Y;
@@ -174,6 +172,7 @@ void AMainCharacter::DodgeRollMovement(const FInputActionValue& Value) {
 
 			//Montage‚ðplay‚·‚é
 			//Montage‚ªI‚í‚Á‚½‚çisAttacking‚ð‰ðœ‚·‚é‚±‚Æ‚ÅUŒ‚‚ª‰Â”\‚É‚È‚é
+			//Montage‚ÌAnimNotify‚ÅDodgeRoll’†‚ÍCollision‚ð“G‚âBall‚Æ‚Ô‚Â‚©‚ç‚È‚¢‚æ‚¤‚ÉÝ’è‚µ‚Ä‚¢‚é
 			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 			if (AnimInstance && DodgeRollMontage) {
 				isAttacking = true;
