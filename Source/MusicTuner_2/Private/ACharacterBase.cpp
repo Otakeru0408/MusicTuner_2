@@ -84,6 +84,7 @@ void AACharacterBase::BeginPlay()
 	if (AMainCharacter* player = Cast<AMainCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))) {
 		player->OnPlayerDied.AddDynamic(this, &AACharacterBase::UnBindAITarget);
 	}
+
 }
 
 // Called every frame
@@ -185,6 +186,9 @@ void AACharacterBase::OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrup
 			EAttachLocation::SnapToTarget,
 			true
 		);
+
+		//ここでつぎのステージへのドアを開けるためのデリゲートを発火
+		OnEnemyDead.Broadcast();
 
 		//ちょっとめんどいけど、Dieパーティクルが終わったらEnemyをDestroyする
 		if (NiagaraComp) {

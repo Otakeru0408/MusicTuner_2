@@ -15,6 +15,9 @@
 
 #include "ACharacterBase.generated.h"
 
+//プレイヤー死亡時に発動するデリゲート
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnemyDeadSignature);
+
 class ASoundRingNext;
 class UHealthComponent;
 class AEnemyAIController;
@@ -62,6 +65,10 @@ public:
 
 	UFUNCTION()
 	AActor* CheckSensor();
+
+	// 2. クラス内にデリゲートの変数を作成
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnEnemyDeadSignature OnEnemyDead;
 
 
 	UPROPERTY(VisibleAnywhere, Category = "AI")
