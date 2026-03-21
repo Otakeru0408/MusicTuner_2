@@ -173,7 +173,22 @@ void AMainCharacter::DodgeRollMovement(const FInputActionValue& Value) {
 			SetActorRotation(FRotationMatrix::MakeFromX(inputDirection).Rotator());
 
 			//Montage‚ðplay‚·‚é
-			float duration = PlayAnimMontage(DodgeRollMontage);
+			//Montage‚ªI‚í‚Á‚½‚çisAttacking‚ð‰ðœ‚·‚é‚±‚Æ‚ÅUŒ‚‚ª‰Â”\‚É‚È‚é
+			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+			if (AnimInstance && DodgeRollMontage) {
+				isAttacking = true;
+				float duration = PlayAnimMontage(DodgeRollMontage);
+				if (duration > 0) {
+					FOnMontageEnded EndDelegate;
+					EndDelegate.BindLambda([this](UAnimMontage* Montage, bool bInterrupted)
+						{
+							isAttacking = false;
+						});
+
+					AnimInstance->Montage_SetEndDelegate(EndDelegate, DodgeRollMontage);
+				}
+			}
+
 		}
 		else {
 			DoubleClickTimeWASD[inputVal] = GetWorld()->GetTimeSeconds();
