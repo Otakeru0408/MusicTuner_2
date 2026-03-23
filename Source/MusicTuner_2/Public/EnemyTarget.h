@@ -36,6 +36,8 @@ public:
 	UPROPERTY()
 	bool isFollowing = true;
 
+	UPROPERTY(EditAnywhere, Category = "Parameter")
+	TObjectPtr<UMaterialInterface> HitEnableMat;
 
 protected:
 	// Called when the game starts or when spawned
@@ -71,9 +73,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Parameter")
 	TObjectPtr<UMaterialInterface> HitUnableMat;
-
-	UPROPERTY(EditAnywhere, Category = "Parameter")
-	TObjectPtr<UMaterialInterface> HitEnableMat;
 
 	UPROPERTY(EditAnywhere, Category = "Parameter")
 	TObjectPtr<USoundBase> AttackSound;

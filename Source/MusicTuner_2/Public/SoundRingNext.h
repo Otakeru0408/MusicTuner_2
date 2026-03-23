@@ -31,6 +31,9 @@ public:
 	UFUNCTION()
 	void DestroyMySelf();
 
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> HitEnableMat;
+
 
 protected:
 	// Called when the game starts or when spawned

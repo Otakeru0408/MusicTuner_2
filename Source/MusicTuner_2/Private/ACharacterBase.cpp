@@ -60,7 +60,11 @@ void AACharacterBase::BeginPlay()
 			SoundRing->SetBPM(BPM);
 			SoundRing->SetRingDivideNum(RingDividedNum);
 			SoundRing->SetRingNum(RingNum);
+			if (HitEnableMat)SoundRing->HitEnableMat = HitEnableMat;
 		}
+	}
+	if (SkinMat) {
+		GetMesh()->SetMaterial(0, SkinMat);
 	}
 
 	//WidgetComponent‚ÉBP‚ÌWidget‚ğŠ„‚è“–‚Ä‚é

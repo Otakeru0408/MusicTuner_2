@@ -166,6 +166,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Appearance")
 	TSubclassOf <ARewardCrystal> RewardItem;
 
+	UPROPERTY(EditAnywhere, Category = "Appearance")
+	TObjectPtr <UMaterialInterface> SkinMat;
+
 	UPROPERTY(EditAnywhere, Category = "SoundRing")
 	int BPM;
 
@@ -174,6 +177,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "SoundRing")
 	int RingNum;
+
+	UPROPERTY(EditAnywhere, Category = "SoundRing")
+	TObjectPtr<UMaterialInterface> HitEnableMat;
 
 public:
 	// Called every frame

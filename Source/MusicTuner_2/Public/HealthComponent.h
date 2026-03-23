@@ -31,6 +31,9 @@ public:
 	UFUNCTION()
 	bool GetIsAlive() { return isAlive; }
 
+	UFUNCTION()
+	void SetMaxHP(float maxHP) { MaxHealth = maxHP; }
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

@@ -73,6 +73,7 @@ void ASoundRingNext::BeginPlay()
 
 	//BPMで弾を中心にリセットする機能
 	// タイマーの開始
+	resetBallIndex = enemyBalls.Num() - 1;
 	if (BPM > 0) {
 		GetWorldTimerManager().SetTimer(
 			ResetTimerHandle,             // ハンドル
@@ -144,6 +145,7 @@ AActor* ASoundRingNext::GenerateEnemyTarget(float deg, float length) {
 			// 生成成功後の処理（例：初期化関数の呼び出しなど）
 			SpawnedActor->SetSpeed(SoundRingRadius_Single * 2 * BPM / 60.0f);
 			SpawnedActor->SetEnemyReference(GetOwner());
+			if (HitEnableMat)SpawnedActor->HitEnableMat = HitEnableMat;
 			return SpawnedActor;
 		}
 	}
@@ -248,7 +250,9 @@ void ASoundRingNext::ResetBallsPosition() {
 		}
 	}
 
-	resetBallIndex = (resetBallIndex + 1) % enemyBalls.Num();
+	//resetBallIndex = (resetBallIndex + 1) % enemyBalls.Num();
+	resetBallIndex--;
+	if (resetBallIndex < 0)resetBallIndex = enemyBalls.Num() - 1;
 }
 
 //Audioの音量を距離によって変化させるための割合を計測する
