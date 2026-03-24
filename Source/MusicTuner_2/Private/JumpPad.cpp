@@ -71,7 +71,7 @@ void AJumpPad::HandleJumpProgress(float Value)
 	if (TargetCharacter && SplinePath)
 	{
 		// スプラインの全長に対して、カーブの値(0~1)を掛けて現在の位置を取得
-		float Distance = SplinePath->GetSplineLength() * Value;
+		float Distance = SplinePath->GetSplineLength() * Value / JumpTime;
 		FVector NewLocation = SplinePath->GetLocationAtDistanceAlongSpline(Distance, ESplineCoordinateSpace::World);
 
 		// プレイヤーの位置を更新

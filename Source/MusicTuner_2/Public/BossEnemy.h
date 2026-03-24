@@ -19,4 +19,10 @@ public:
 
 protected:
 	virtual void BeginPlay()override;
+
+	UPROPERTY(EditAnywhere, Category = "Appearance")
+	TArray<FVector> SoundRingPositions;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "SoundRing")
+	TArray < TObjectPtr<ASoundRingNext>> Ring_Array;
 };

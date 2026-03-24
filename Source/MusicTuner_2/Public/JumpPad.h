@@ -17,6 +17,8 @@ public:
 	// Sets default values for this actor's properties
 	AJumpPad();
 
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -33,6 +35,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Jump Settings")
 	TObjectPtr<UAnimMontage> JumpMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Jump Settings")
+	float JumpTime = 1.0f;
 
 	// 2. タイムライン関連
 	FTimeline JumpTimeline;

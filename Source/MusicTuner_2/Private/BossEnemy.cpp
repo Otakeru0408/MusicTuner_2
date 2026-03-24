@@ -23,29 +23,34 @@ void ABossEnemy::BeginPlay() {
 	ACharacter::BeginPlay();
 	//Super::BeginPlay();	親クラスのBeginPlayは実行しない
 
-	//SoundRingを生成する
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = this;
-	SpawnParams.Instigator = GetInstigator();
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	for (int i = 0; i < SoundRingPositions.Num(); i++) {
 
-	FTransform SRTrans(GetActorRotation(), GetActorLocation() + SoundRingOffset, FVector(1.0f));
+		//SoundRingを生成する
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	UWorld* world = GetWorld();
-	//if (SoundRingClass) UE_LOG(LogTemp, Display, TEXT("Instantiate"));
-	if (world && SoundRingClass) {
-		SoundRing = world->SpawnActorDeferred<ASoundRingNext>(
-			SoundRingClass, SRTrans,
-			SpawnParams.Owner, SpawnParams.Instigator, SpawnParams.SpawnCollisionHandlingOverride);
+		FTransform SRTrans(GetActorRotation(), GetActorLocation() + SoundRingPositions[i] + SoundRingOffset, FVector(1.0f));
 
-		if (SoundRing) {
-			SoundRing->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
-			SoundRing->SetBPM(BPM);
-			SoundRing->SetRingDivideNum(RingDividedNum);
-			SoundRing->SetRingNum(RingNum);
-			if (HitEnableMat)SoundRing->HitEnableMat = HitEnableMat;
+		UWorld* world = GetWorld();
+		if (world && SoundRingClass) {
+			SoundRing = world->SpawnActorDeferred<ASoundRingNext>(
+				SoundRingClass, SRTrans,
+				SpawnParams.Owner, SpawnParams.Instigator, SpawnParams.SpawnCollisionHandlingOverride);
+
+			if (SoundRing) {
+				SoundRing->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+				SoundRing->SetBPM(BPM);
+				SoundRing->SetRingDivideNum(RingDividedNum);
+				SoundRing->SetRingNum(RingNum);
+				if (HitEnableMat)SoundRing->HitEnableMat = HitEnableMat;
+			}
 		}
+
+		Ring_Array.Add(SoundRing);
 	}
+
 	if (SkinMat) {
 		GetMesh()->SetMaterial(0, SkinMat);
 	}

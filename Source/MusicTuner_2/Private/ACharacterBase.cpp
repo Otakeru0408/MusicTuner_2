@@ -207,7 +207,7 @@ void AACharacterBase::OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrup
 			ARewardCrystal* reward = GetWorld()->SpawnActor<ARewardCrystal>(
 				RewardItem, GetActorLocation(), GetActorRotation());
 
-			reward->StartSpreadOut();
+			if (reward)reward->StartSpreadOut();
 		}
 	}
 }
