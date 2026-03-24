@@ -110,7 +110,7 @@ protected:
 	TObjectPtr<UWidgetComponent> HPWidget;
 
 	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<UPlayerHP> Widget_HP_Class;
+	TSubclassOf<UPlayerHP> Widget_HP_Class = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "UI")
 	float DamageTextOffset_Z = 50.0f;

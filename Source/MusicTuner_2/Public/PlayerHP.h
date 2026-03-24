@@ -29,16 +29,16 @@ public:
 	void UpdateCrystalNum(int num);
 
 	UPROPERTY(meta = (BindWidget))
-	class UImage* HP_Bar;
+	class UImage* HP_Bar = nullptr;
 
 	UPROPERTY(meta = (BindWidget))
-	class UImage* HP_LateBar;
+	class UImage* HP_LateBar = nullptr;
 
 	UPROPERTY(meta = (BindWidget))
-	class UEditableTextBox* HP_Text;
+	class UEditableTextBox* HP_Text = nullptr;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* CrystalText;
+	class UTextBlock* CrystalText = nullptr;
 
 	UPROPERTY()
 	FVector2D MaxBarSize;

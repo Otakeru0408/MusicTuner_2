@@ -20,6 +20,7 @@ ABossEnemy::ABossEnemy() {
 }
 
 void ABossEnemy::BeginPlay() {
+	ACharacter::BeginPlay();
 	//Super::BeginPlay();	親クラスのBeginPlayは実行しない
 
 	//SoundRingを生成する
@@ -52,11 +53,13 @@ void ABossEnemy::BeginPlay() {
 	//WidgetComponentにBPのWidgetを割り当てる
 	if (Widget_HP_Class) {
 		HPWidget->SetWidgetClass(Widget_HP_Class);
+		HPWidget->InitWidget();	//Widgetのインスタンスを作成する
+
 		WidgetData = Cast<UPlayerHP>(HPWidget->GetUserWidgetObject());
 		WidgetData->InitData(Health->GetMaxHP());
 	}
 
-	/*
+
 	//後のためにAIControllerとBlackboardを保持しておく
 	AIC_Enemy = Cast <AEnemyAIController>(GetController());
 	BB_Enemy = AIC_Enemy->GetBlackboardComponent();
@@ -71,5 +74,4 @@ void ABossEnemy::BeginPlay() {
 	if (AMainCharacter* player = Cast<AMainCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))) {
 		player->OnPlayerDied.AddDynamic(this, &ABossEnemy::UnBindAITarget);
 	}
-	*/
 }

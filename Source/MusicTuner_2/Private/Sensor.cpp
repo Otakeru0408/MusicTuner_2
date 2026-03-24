@@ -30,6 +30,9 @@ void USensor::BeginPlay()
 
 bool USensor::CheckSensor(TArray<TObjectPtr<AActor>>& OutResults) {
 	OutResults.Empty();		//いったん初期化。ここにhitしたアクターを詰めていく
+	if (!Owner) {
+		return false;
+	}
 
 	FVector StartLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * TraceLength * 0.5f;
 	//FVector EndLocation = StartLocation + Owner->GetActorForwardVector() * TraceLength;
@@ -63,8 +66,6 @@ bool USensor::CheckSensor(TArray<TObjectPtr<AActor>>& OutResults) {
 		FColor::Yellow
 	);
 
-	/*if (!bHit) { UE_LOG(LogTemp, Log, TEXT("dont hit Sensor")); }
-	else { UE_LOG(LogTemp, Log, TEXT("Hit Sensor")); }*/
 
 
 	if (bHit) {

@@ -33,7 +33,7 @@ public:
 protected:
 	virtual void OnPossess(APawn* InPawn)override;
 
-	void InitPlayerReference();
+	virtual void InitPlayerReference();
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 	TObjectPtr<UBehaviorTree> BT_Enemy;
