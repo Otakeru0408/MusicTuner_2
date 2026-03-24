@@ -20,6 +20,9 @@ public:
 protected:
 	virtual void BeginPlay()override;
 
+	virtual void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)override;
+
+
 	UPROPERTY(EditAnywhere, Category = "Appearance")
 	TArray<FVector> SoundRingPositions;
 

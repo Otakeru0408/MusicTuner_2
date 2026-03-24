@@ -95,7 +95,7 @@ void AACharacterBase::BeginPlay()
 void AACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (!BB_Enemy)BB_Enemy = AIC_Enemy->GetBlackboardComponent();
+	if (!BB_Enemy && AIC_Enemy)BB_Enemy = AIC_Enemy->GetBlackboardComponent();
 }
 
 //ƒ_ƒ[ƒW‚ğó‚¯‚½‚ÌŠÖ”

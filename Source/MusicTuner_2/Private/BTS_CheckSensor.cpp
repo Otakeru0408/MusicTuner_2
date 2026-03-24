@@ -22,9 +22,8 @@ void UBTS_CheckSensor::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	if (BBComp) {
 		AActor* result = enemy->CheckSensor();
 
-		//if (result)UE_LOG(LogTemp, Log, TEXT("Results exists"));
-		/*if (result) {
+		if (result) {
 			BBComp->SetValueAsObject(TargetActorKey.SelectedKeyName, result);
-		}*/
+		}
 	}
 }

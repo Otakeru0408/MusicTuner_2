@@ -80,3 +80,13 @@ void ABossEnemy::BeginPlay() {
 		player->OnPlayerDied.AddDynamic(this, &ABossEnemy::UnBindAITarget);
 	}
 }
+
+void ABossEnemy::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser) {
+	AACharacterBase::HandleTakeAnyDamage(DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
+	if (!Health->GetIsAlive()) {
+		for (int i = Ring_Array.Num() - 1; i >= 0; i--) {
+			Ring_Array[i]->DestroyMySelf();
+		}
+		Ring_Array.Empty();
+	}
+}
