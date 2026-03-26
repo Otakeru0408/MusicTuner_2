@@ -38,8 +38,9 @@ void AEnemyTarget::Tick(float DeltaTime)
 	if (isFollowing) {
 		//通常の移動処理
 		FVector forward = Sphere->GetForwardVector();
-		FVector NextPos = forward * Speed * DeltaTime + GetActorLocation();
-		SetActorLocation(NextPos);
+		FVector NextPos = forward * Speed * DeltaTime;
+		Length_from_center += NextPos.Length();			//今回で進む分をLengthに加算する
+		SetActorLocation(NextPos + GetActorLocation());
 	}
 
 	//プレイヤーに一定期間でダメージを与え続けるための変数

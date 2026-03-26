@@ -39,6 +39,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Parameter")
 	TObjectPtr<UMaterialInterface> HitEnableMat;
 
+	UPROPERTY(VisibleAnywhere, Category = "Parameter")
+	float Length_from_center = 0.0f;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

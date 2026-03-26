@@ -145,6 +145,7 @@ AActor* ASoundRingNext::GenerateEnemyTarget(float deg, float length) {
 			// 生成成功後の処理（例：初期化関数の呼び出しなど）
 			SpawnedActor->SetSpeed(SoundRingRadius_Single * 2 * BPM / 60.0f);
 			SpawnedActor->SetEnemyReference(GetOwner());
+			SpawnedActor->Length_from_center = length;
 			if (HitEnableMat)SpawnedActor->HitEnableMat = HitEnableMat;
 			return SpawnedActor;
 		}
@@ -190,12 +191,14 @@ void ASoundRingNext::SetSoundRingRotation() {
 void ASoundRingNext::SetEnemyTargetPos() {
 	FVector nowSoundRingPos = GetActorLocation();
 	//移動中はSoundRingとTargetの動きにばらつきが発生するので移動量も勘案に入れる
-	FVector RingForward = GetOwner()->GetActorForwardVector() * (GetOwner()->GetVelocity().Length() / 100.0f);
+	//RingForward=SoundRingの前方ベクトル×SoundRingの移動量/100(velocityをいい感じに小さくしてる)
+	FVector RingForward = GetOwner()->GetActorForwardVector();// * (GetOwner()->GetVelocity().Length() / 100.0f);
 
 	//1.基本ベクトルの計算
 	if (!IsValid(PlayerPawn)) {
 		PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	}
+	//SoundRing→Playerのベクトルを取得。
 	FVector BaseVec = nowSoundRingPos - PlayerPawn->GetActorLocation();
 	BaseVec.Normalize();
 
@@ -204,34 +207,37 @@ void ASoundRingNext::SetEnemyTargetPos() {
 
 	//2.軸ベクトルの計算
 	SetSoundRingRotation();
-	FVector AxisVec = GetActorUpVector();
 
 	bool isChecked = false;		//各Ringの半径をしらべる（各Ringにつき1個のBallだけしらべる）
 
+	//for(ballの1周分の配列)
 	for (FEnemyBall& enemyball : enemyBalls) {
 		isChecked = false;
+		//for(ball1個分の配列)
 		for (AActor* balls : enemyball.Balls) {
+			AEnemyTarget* target = Cast<AEnemyTarget>(balls);
+			if (!target)continue;
+
 			//3.基本ベクトルと、(中心→Ball)のベクトルがなす角を計算する
-			FVector BallVec = balls->GetActorLocation() - nowSoundRingPos;
-			float Length = BallVec.Length();
-			BallVec.Normalize();
+			FVector BallVec = target->GetActorForwardVector();
 
 			//2つのベクトルの内積から角度を求める
 			float DotProductValue = FVector::DotProduct(BaseVec, BallVec);
-			float BallDegree = FMath::RadiansToDegrees(FMath::Acos(DotProductValue));
 
 			//外積もとって-かどうか確かめる
 			FVector CrossProduct = FVector::CrossProduct(BaseVec, BallVec);
-			if (FVector::DotProduct(CrossProduct, BaseUpVec) < 0) {
-				BallDegree *= -1;
-			}
+			float CrossProductValue = FVector::DotProduct(CrossProduct, BaseUpVec);
+
+			//内積の値と外積の値をAtan2に入れることで0°付近の値でも安定して角度を取得できる
+			float BallDegree = FMath::RadiansToDegrees(FMath::Atan2(CrossProductValue, DotProductValue));
 
 			//4.Ballの正しい位置を決定する
-			balls->SetActorLocation(nowSoundRingPos + Length * RotateInAxis(AxisVec, BaseVec, BallDegree) + RingForward * 2);
+			//SoundRingの中心の位置+(BaseUpVecを中心としてBaseVecをDegreeだけ回転させたときの位置)*Length+
+			balls->SetActorLocation(nowSoundRingPos + target->Length_from_center * RotateInAxis(BaseUpVec, BaseVec, BallDegree));// +RingForward * 2);
 
 			//1周分のBallを保持するenemyBallに、その周の半径を持たせる
 			if (!isChecked) {
-				enemyball.NowRadius = Length;
+				enemyball.NowRadius = target->Length_from_center;
 				isChecked = true;
 			}
 		}
@@ -247,6 +253,7 @@ void ASoundRingNext::ResetBallsPosition() {
 			FVector direction = target->GetInitialDirection();
 			direction.Normalize();
 			target->SetActorLocation(nowPos + direction * SoundRingRadius_Single);
+			target->Length_from_center = (direction * SoundRingRadius_Single).Length();
 		}
 	}
 
