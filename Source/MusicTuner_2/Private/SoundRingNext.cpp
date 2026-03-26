@@ -216,7 +216,7 @@ void ASoundRingNext::SetEnemyTargetPos() {
 		//for(ball1個分の配列)
 		for (AActor* balls : enemyball.Balls) {
 			AEnemyTarget* target = Cast<AEnemyTarget>(balls);
-			if (!target)continue;
+			if (!target || !target->isFollowing)continue;
 
 			//3.基本ベクトルと、(中心→Ball)のベクトルがなす角を計算する
 			FVector BallVec = target->GetActorForwardVector();

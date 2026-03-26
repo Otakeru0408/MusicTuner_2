@@ -81,6 +81,17 @@ void ABossEnemy::BeginPlay() {
 	}
 }
 
+void ABossEnemy::Tick(float DeltaTime) {
+	ACharacter::Tick(DeltaTime);
+
+	if (!BB_Enemy && AIC_Enemy)BB_Enemy = AIC_Enemy->GetBlackboardComponent();
+
+	//í‚ÉSoundRing‚ğ©g‚Æ‚Ì‘Š‘ÎˆÊ’u‚É’u‚­
+	for (int i = 0; i < Ring_Array.Num(); i++) {
+		Ring_Array[i]->SetActorLocation(GetActorLocation() + SoundRingPositions[i]);
+	}
+}
+
 void ABossEnemy::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser) {
 	AACharacterBase::HandleTakeAnyDamage(DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
 	if (!Health->GetIsAlive()) {

@@ -20,6 +20,8 @@ public:
 protected:
 	virtual void BeginPlay()override;
 
+	virtual void Tick(float DeltaTime)override;
+
 	virtual void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)override;
 
 

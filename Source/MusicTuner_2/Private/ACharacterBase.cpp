@@ -49,14 +49,14 @@ void AACharacterBase::BeginPlay()
 	FTransform SRTrans(GetActorRotation(), GetActorLocation() + SoundRingOffset, FVector(1.0f));
 
 	UWorld* world = GetWorld();
-	if (SoundRingClass) UE_LOG(LogTemp, Display, TEXT("Instantiate"));
+	//if (SoundRingClass) UE_LOG(LogTemp, Display, TEXT("Instantiate"));
 	if (world && SoundRingClass) {
 		SoundRing = world->SpawnActorDeferred<ASoundRingNext>(
 			SoundRingClass, SRTrans,
 			SpawnParams.Owner, SpawnParams.Instigator, SpawnParams.SpawnCollisionHandlingOverride);
 
 		if (SoundRing) {
-			SoundRing->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+			//SoundRing->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
 			SoundRing->SetBPM(BPM);
 			SoundRing->SetRingDivideNum(RingDividedNum);
 			SoundRing->SetRingNum(RingNum);
@@ -96,6 +96,9 @@ void AACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (!BB_Enemy && AIC_Enemy)BB_Enemy = AIC_Enemy->GetBlackboardComponent();
+
+	//常にSoundRingを自身との相対位置に置く
+	SoundRing->SetActorLocation(GetActorLocation() + SoundRingOffset);
 }
 
 //ダメージを受けた時の関数
