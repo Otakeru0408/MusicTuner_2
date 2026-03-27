@@ -140,6 +140,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(DashFlag, ETriggerEvent::Started, this, &AMainCharacter::SetMoveToDash);
 		EnhancedInputComponent->BindAction(DashFlag, ETriggerEvent::Completed, this, &AMainCharacter::SetMoveToWalk);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AMainCharacter::EventOnAttack);
+		EnhancedInputComponent->BindAction(QuitAction, ETriggerEvent::Started, this, &AMainCharacter::QuitGame);
 	}
 }
 
@@ -332,4 +333,8 @@ void AMainCharacter::OnPlayerDeath() {
 
 bool AMainCharacter::GetIsAlive() {
 	return Health->GetIsAlive();
+}
+
+void AMainCharacter::QuitGame(const FInputActionValue& Value) {
+	UKismetSystemLibrary::QuitGame(GetWorld(), Cast<APlayerController>(GetController()), EQuitPreference::Quit, false);
 }

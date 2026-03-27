@@ -91,6 +91,7 @@ protected:
 	UFUNCTION()
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
+	void QuitGame(const FInputActionValue& Value);
 	void ControlMovement(const FInputActionValue& Value);
 	void DodgeRollMovement(const FInputActionValue& Value);
 	void ControlCamera(const FInputActionValue& Value);
@@ -152,6 +153,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> AttackAction;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> QuitAction;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UAnimMontage> AttackMontage;
