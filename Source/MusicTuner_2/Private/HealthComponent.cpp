@@ -41,3 +41,10 @@ void UHealthComponent::UpdateHP(float Damage)
 		isAlive = false;
 	}
 }
+
+void UHealthComponent::HealHP(float heal) {
+	CurrentHealth += heal;
+	if (CurrentHealth > MaxHealth) {
+		CurrentHealth = MaxHealth;
+	}
+}

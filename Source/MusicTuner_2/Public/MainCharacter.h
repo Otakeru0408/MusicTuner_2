@@ -189,6 +189,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	float DoubleClickLimitTime = 0.25f;
 
+	UPROPERTY(EditAnywhere, Category = "Health")
+	float CrystalHealVal = 1.0f;
+
 private:
 	FTimerHandle SoundStopTimerHandle;
 };

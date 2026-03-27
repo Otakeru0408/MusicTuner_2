@@ -20,6 +20,9 @@ public:
 	void UpdateHP(float Damage);
 
 	UFUNCTION()
+	void HealHP(float heal);
+
+	UFUNCTION()
 	float GetCurrectHP() { return CurrentHealth; }
 
 	UFUNCTION()

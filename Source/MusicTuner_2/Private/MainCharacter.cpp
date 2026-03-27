@@ -273,6 +273,8 @@ float AMainCharacter::GetNowDamageNum() {
 
 void AMainCharacter::OnCrystalGained() {
 	RewardCrystalNum++;
+	Health->HealHP(CrystalHealVal);
+	Widget_HP->UpdateHP(Health->GetCurrentPercent(), Health->GetCurrectHP());
 	Widget_HP->UpdateCrystalNum(RewardCrystalNum);
 }
 
