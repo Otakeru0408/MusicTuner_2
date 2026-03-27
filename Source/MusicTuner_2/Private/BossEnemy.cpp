@@ -90,6 +90,8 @@ void ABossEnemy::Tick(float DeltaTime) {
 	for (int i = 0; i < Ring_Array.Num(); i++) {
 		Ring_Array[i]->SetActorLocation(GetActorLocation() + SoundRingPositions[i]);
 	}
+
+	UE_LOG(LogTemp, Log, TEXT("NowHP : %d"), (int32)Health->GetCurrectHP());
 }
 
 void ABossEnemy::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser) {

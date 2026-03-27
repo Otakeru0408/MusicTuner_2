@@ -9,7 +9,6 @@ UHealthComponent::UHealthComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
-	CurrentHealth = MaxHealth;
 }
 
 
@@ -17,15 +16,7 @@ UHealthComponent::UHealthComponent()
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	/*
-	// 親アクター（Owner）を取得
-	AActor* Owner = GetOwner();
-	if (Owner)
-	{
-		// 親アクターが受けるダメージイベントをこのコンポーネントで監視する
-		Owner->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::HandleTakeAnyDamage);
-	}
-	*/
+	CurrentHealth = MaxHealth;
 }
 
 void UHealthComponent::UpdateHP(float Damage)
