@@ -98,7 +98,7 @@ void AACharacterBase::Tick(float DeltaTime)
 	if (!BB_Enemy && AIC_Enemy)BB_Enemy = AIC_Enemy->GetBlackboardComponent();
 
 	//常にSoundRingを自身との相対位置に置く
-	SoundRing->SetActorLocation(GetActorLocation() + SoundRingOffset);
+	if (SoundRing)SoundRing->SetActorLocation(GetActorLocation() + SoundRingOffset);
 }
 
 //ダメージを受けた時の関数

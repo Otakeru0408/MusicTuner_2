@@ -25,19 +25,22 @@ EBTNodeResult::Type UBTT_EnemyAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	if (EnemyAIC && MyBlackboard && MyPawn) {
 		//‚Ü‚¸UŒ‚‚Ì‘O‚É“G‚Ì•û‚ğ‚µ‚Á‚©‚èŒü‚­
 		AActor* Target = Cast<AActor>(MyBlackboard->GetValueAsObject(TargetKey.SelectedKeyName));
-		FRotator VecToPlayer = UKismetMathLibrary::FindLookAtRotation(
-			MyPawn->GetActorLocation(),
-			Target->GetActorLocation()
-		);
-		VecToPlayer.Pitch = 0;
-		VecToPlayer.Roll = 0;
 
-		MyPawn->SetActorRotation(VecToPlayer);
+		if (Target) {
+			FRotator VecToPlayer = UKismetMathLibrary::FindLookAtRotation(
+				MyPawn->GetActorLocation(),
+				Target->GetActorLocation()
+			);
+			VecToPlayer.Pitch = 0;
+			VecToPlayer.Roll = 0;
 
-		//UŒ‚ƒ‚[ƒVƒ‡ƒ“Ä¶
-		MyPawn->StartAttackAnim();
+			MyPawn->SetActorRotation(VecToPlayer);
 
-		return EBTNodeResult::Succeeded;
+			//UŒ‚ƒ‚[ƒVƒ‡ƒ“Ä¶
+			MyPawn->StartAttackAnim();
+
+			return EBTNodeResult::Succeeded;
+		}
 	}
 
 	return EBTNodeResult::Failed;

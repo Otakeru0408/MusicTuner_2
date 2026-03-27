@@ -26,6 +26,9 @@ public:
 	float GetCurrectHP() { return CurrentHealth; }
 
 	UFUNCTION()
+	void SetCurrectHP(float hp) { CurrentHealth = hp; }
+
+	UFUNCTION()
 	float GetMaxHP() { return MaxHealth; }
 
 	UFUNCTION()
@@ -35,7 +38,7 @@ public:
 	bool GetIsAlive() { return isAlive; }
 
 	UFUNCTION()
-	void SetMaxHP(float maxHP) { MaxHealth = maxHP; }
+	void SetMaxHP(float maxHP) { MaxHealth = maxHP; CurrentHealth = maxHP; }
 
 protected:
 	// Called when the game starts

@@ -17,6 +17,7 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerHP.h"
 #include "Widget_PlayerDeath.h"
+#include "SoundTuner_Instance.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -75,7 +76,26 @@ void AMainCharacter::BeginPlay()
 		}
 	}
 
+
+	//新しくレベルをロードしたらHPを引き継ぐ
+	USoundTuner_Instance* GI = Cast<USoundTuner_Instance>(GetGameInstance());
+	if (GI && GI->PlayerHP > 0) {
+		Health->SetCurrectHP(GI->PlayerHP);
+		Widget_HP->UpdateHP(Health->GetCurrentPercent(), Health->GetCurrectHP());
+		RewardCrystalNum = GI->crystalNum;
+		Widget_HP->UpdateCrystalNum(RewardCrystalNum);
+	}
+
 	OnPlayerDied.AddDynamic(this, &AMainCharacter::PlayerDeathLeastener);
+}
+
+void AMainCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	USoundTuner_Instance* GI = Cast<USoundTuner_Instance>(GetGameInstance());
+	if (GI) {
+		GI->PlayerHP = Health->GetCurrectHP();
+		GI->crystalNum = RewardCrystalNum;
+	}
+	Super::EndPlay(EndPlayReason);
 }
 
 // Called every frame

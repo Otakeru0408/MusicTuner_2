@@ -91,7 +91,6 @@ void ABossEnemy::Tick(float DeltaTime) {
 		Ring_Array[i]->SetActorLocation(GetActorLocation() + SoundRingPositions[i]);
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("NowHP : %d"), (int32)Health->GetCurrectHP());
 }
 
 void ABossEnemy::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser) {
