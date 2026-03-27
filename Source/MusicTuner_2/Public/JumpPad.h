@@ -57,6 +57,10 @@ protected:
 
 	UFUNCTION()
 	void OnJumpFinished();
+
+	// 1秒間に回転する角度 (度/秒)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
+	FRotator RotationSpeed = FRotator(0.f, 90.f, 0.f); // 秒間90度回転（デフォルト）
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -13,11 +13,12 @@ AJumpPad::AJumpPad()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	RootComponent = Mesh;
 
 	OverlapVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("OverlapVolume"));
-	OverlapVolume->SetupAttachment(RootComponent);
+	RootComponent = OverlapVolume;
+
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+	Mesh->SetupAttachment(RootComponent);
 
 	SplinePath = CreateDefaultSubobject<USplineComponent>(TEXT("SplinePath"));
 	SplinePath->SetupAttachment(RootComponent);
@@ -49,11 +50,13 @@ void AJumpPad::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	JumpTimeline.TickTimeline(DeltaTime);
+
+	Mesh->AddLocalRotation(RotationSpeed * DeltaTime);
 }
 
 void AJumpPad::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Log, TEXT("Overlap to Box"));
+	//UE_LOG(LogTemp, Log, TEXT("Overlap to Box"));
 	TargetCharacter = Cast<ACharacter>(OtherActor);
 	if (TargetCharacter && !JumpTimeline.IsPlaying())
 	{
