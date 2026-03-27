@@ -79,6 +79,9 @@ public:
 	UFUNCTION()
 	bool GetIsAlive();
 
+	UFUNCTION(BlueprintPure)
+	UPlayerHP* GetPlayerUI() { return Widget_HP; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -18,6 +18,7 @@
 #include "PlayerHP.h"
 #include "Widget_PlayerDeath.h"
 #include "SoundTuner_Instance.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -307,6 +308,10 @@ void AMainCharacter::OnPlayerDeath() {
 	if (APlayerController* controller = Cast<APlayerController>(GetController())) {
 		DisableInput(controller);
 		controller->bShowMouseCursor = true;
+	}
+
+	if (Widget_HP) {
+		Widget_HP->RemoveFromParent();
 	}
 
 	//Mesh‚ğƒ‰ƒOƒh[ƒ‹‰»‚·‚é

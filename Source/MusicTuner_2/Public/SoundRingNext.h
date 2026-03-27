@@ -81,7 +81,7 @@ protected:
 	TObjectPtr<UMaterialInstanceDynamic> DynamicMaterialInst;
 
 	UPROPERTY(EditAnywhere, Category = "Materials")
-	TObjectPtr<UMaterialInstanceConstant> M_SoundRing;
+	TObjectPtr<class UMaterialInstanceConstant> M_SoundRing;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Materials")
 	int BPM;

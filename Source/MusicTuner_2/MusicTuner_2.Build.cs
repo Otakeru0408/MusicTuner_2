@@ -8,7 +8,8 @@ public class MusicTuner_2 : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayCameras", "Niagara", "AIModule" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayCameras", "Niagara", "AIModule",
+                                                            "UMG"});
 
         PrivateDependencyModuleNames.AddRange(new string[] { });
 
