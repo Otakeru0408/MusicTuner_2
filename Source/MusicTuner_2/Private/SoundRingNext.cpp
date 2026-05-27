@@ -71,6 +71,8 @@ void ASoundRingNext::BeginPlay()
 		enemyBalls.Add(BallArray);
 	}
 
+	Audio->SetIntParameter(FName("Sound_ID"), parentPitch);
+
 	//BPMで弾を中心にリセットする機能
 	// タイマーの開始
 	resetBallIndex = enemyBalls.Num() - 1;
@@ -145,6 +147,7 @@ AActor* ASoundRingNext::GenerateEnemyTarget(float deg, float length) {
 			// 生成成功後の処理（例：初期化関数の呼び出しなど）
 			SpawnedActor->SetSpeed(SoundRingRadius_Single * 2 * BPM / 60.0f);
 			SpawnedActor->SetEnemyReference(GetOwner());
+			SpawnedActor->SetPitch(parentPitch);
 			SpawnedActor->Length_from_center = length;
 			if (HitEnableMat)SpawnedActor->HitEnableMat = HitEnableMat;
 			return SpawnedActor;

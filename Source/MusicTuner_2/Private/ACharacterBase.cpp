@@ -60,6 +60,7 @@ void AACharacterBase::BeginPlay()
 			SoundRing->SetBPM(BPM);
 			SoundRing->SetRingDivideNum(RingDividedNum);
 			SoundRing->SetRingNum(RingNum);
+			SoundRing->SetPitch(Pitch);
 			if (HitEnableMat)SoundRing->HitEnableMat = HitEnableMat;
 		}
 	}

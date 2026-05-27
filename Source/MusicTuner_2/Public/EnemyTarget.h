@@ -23,6 +23,9 @@ public:
 	void SetSpeed(float sp) {
 		Speed = sp;
 	}
+	void SetPitch(int p) {
+		parentPitch = p;
+	}
 	void SetEnemyReference(AActor* enemy);
 	UFUNCTION(BlueprintCallable, Category = "Damage")
 	virtual bool DamageToEnemy(int32 DamageValue, AActor* DamageCauser, bool IsComboHit)override;
@@ -105,6 +108,10 @@ protected:
 
 	UPROPERTY()
 	FVector InitialDirection = FVector(0.f);
+
+	//EnemyÇÃäÓâπ(MIDIî‘çÜ)
+	UPROPERTY()
+	int parentPitch = 60;
 
 
 public:

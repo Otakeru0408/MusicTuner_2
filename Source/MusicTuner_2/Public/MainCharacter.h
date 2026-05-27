@@ -196,7 +196,7 @@ protected:
 	TArray<int32> SoundIndexArray = { 0,3,8 };
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
-	int TuneDiff = 52;
+	int TuneDiff = 41;		//C=48だが、最初にチューニングさせたいから41(G)にしている
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	float SoundContinuousTime = 3.0f;

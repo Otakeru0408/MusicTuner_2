@@ -29,6 +29,9 @@ public:
 	void SetRingNum(int num) { RingNum = num; }
 
 	UFUNCTION()
+	void SetPitch(int p) { parentPitch = p; }
+
+	UFUNCTION()
 	void DestroyMySelf();
 
 	UPROPERTY()
@@ -123,4 +126,5 @@ public:
 private:
 	float PassTime = 0;
 	int RingCount = 0;
+	int parentPitch = 52;
 };

@@ -170,6 +170,9 @@ protected:
 	TObjectPtr <UMaterialInterface> SkinMat;
 
 	UPROPERTY(EditAnywhere, Category = "SoundRing")
+	int Pitch;
+
+	UPROPERTY(EditAnywhere, Category = "SoundRing")
 	int BPM;
 
 	UPROPERTY(EditAnywhere, Category = "SoundRing")

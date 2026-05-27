@@ -67,7 +67,7 @@ void UCheckKickHit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 				if (!target->CanDamage()) continue;	//‘ŠŽè‚Éƒ_ƒ[ƒW‚ð—^‚¦‚ç‚ê‚é‚©ƒ`ƒFƒbƒN
 
 				player->DamageCount++;	//‚±‚Ì‚PŒ‚‚Å‚¢‚­‚Â‚ÌActor‚Éƒqƒbƒg‚µ‚½‚©ŒvŽZ
-				bool isNotThirdAfterHit = player->CheckHitCount();	//‚±‚ÌUŒ‚‚ÅƒRƒ“ƒ{‚ª‚Â‚È‚ª‚é‚©(–¢ŽÀ‘•)
+				bool isNotThirdAfterHit = player->CheckHitCount();	//‚±‚ÌUŒ‚‚ÅƒRƒ“ƒ{‚ª‚Â‚È‚ª‚é‚©
 
 				//‘ŠŽè‚ÉUŒ‚‚·‚é
 				bool result = target->DamageToEnemy(player->GetDamageNum(), MeshComp->GetOwner(), true);
