@@ -51,8 +51,22 @@ AMainCharacter::AMainCharacter()
 	Audio = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	Audio->SetupAttachment(RootComponent);
 	Audio->SetAutoActivate(false);
+	AudioArray.Add(Audio);
+
+	Audio2 = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent2"));
+	Audio2->SetupAttachment(RootComponent);
+	Audio2->SetAutoActivate(false);
+	AudioArray.Add(Audio2);
+
+
+	Audio3 = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent3"));
+	Audio3->SetupAttachment(RootComponent);
+	Audio3->SetAutoActivate(false);
+	AudioArray.Add(Audio3);
 
 	Health = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+
+	SoundStopTimerHandles.SetNum(AudioArray.Num());
 }
 
 // Called when the game starts or when spawned
@@ -76,6 +90,7 @@ void AMainCharacter::BeginPlay()
 			Widget_HP->InitData(Health->GetMaxHP());
 		}
 	}
+
 
 
 	//新しくレベルをロードしたらHPを引き継ぐ
@@ -166,6 +181,7 @@ void AMainCharacter::ControlMovement(const FInputActionValue& Value) {
 void AMainCharacter::DodgeRollMovement(const FInputActionValue& Value) {
 	const FVector2D V = Value.Get<FVector2D>();
 
+
 	if (Controller != nullptr)
 	{
 		// カメラの向きに基づいた前方方向を計算
@@ -250,11 +266,11 @@ bool AMainCharacter::CheckHitCount() {
 	//MaxCombo=3回なので、3回目のコンボでまだ音が鳴ってるなら音の更新はしない
 	//3回目のコンボは音が鳴り終えるまで待ってほしい
 	//if (Audio->IsPlaying())UE_LOG(LogTemp, Log, TEXT("IsPlaying : %d"), ComboCount);
-	if (Audio->IsPlaying() && ComboCount == 2) return false;
+	if (GetIsAudioPlaying() && ComboCount == 2) return false;
 
 	//音が鳴っていないときに攻撃したら1回目のコンボ
 	//音が鳴っているときに攻撃したら、コンボ加算
-	if (!Audio->IsPlaying()) {
+	if (!GetIsAudioPlaying()) {
 		ComboCount = 0;
 	}
 	else {
@@ -264,13 +280,15 @@ bool AMainCharacter::CheckHitCount() {
 }
 
 void AMainCharacter::PlayHitSound() {
-	Audio->SetIntParameter(FName("Sound_ID"), SoundIndexArray[ComboCount]);
-	Audio->Play();
-	GetWorldTimerManager().SetTimer(SoundStopTimerHandle, [this]()
-		{
-			Audio->SetTriggerParameter(FName("On Stop"));
-		},
-		SoundContinuousTime, false);
+	for (int i = 0; i <= ComboCount; i++) {
+		AudioArray[i]->SetIntParameter(FName("Sound_ID"), SoundIndexArray[i]);
+		AudioArray[i]->Play();
+		GetWorldTimerManager().SetTimer(SoundStopTimerHandles[i], [this, i]()
+			{
+				AudioArray[i]->SetTriggerParameter(FName("On Stop"));
+			},
+			SoundContinuousTime, false);
+	}
 }
 
 
@@ -337,4 +355,13 @@ bool AMainCharacter::GetIsAlive() {
 
 void AMainCharacter::QuitGame(const FInputActionValue& Value) {
 	UKismetSystemLibrary::QuitGame(GetWorld(), Cast<APlayerController>(GetController()), EQuitPreference::Quit, false);
+}
+
+bool AMainCharacter::GetIsAudioPlaying() {
+	for (int i = 0; i < AudioArray.Num(); i++) {
+		if (AudioArray[i]->IsPlaying()) {
+			return true;
+		}
+	}
+	return false;
 }

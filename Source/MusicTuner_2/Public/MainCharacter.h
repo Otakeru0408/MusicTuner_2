@@ -2,12 +2,14 @@
 
 #pragma once
 
+#include <vector>
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"     // 追加する
 #include "GameFramework/CharacterMovementComponent.h" // 必須インクルード
 
 #include "MainCharacter.generated.h"
+
 
 class UStaticMeshComponent;
 class USpringArmComponent;
@@ -103,6 +105,8 @@ protected:
 	}
 	void EventOnAttack(const FInputActionValue& value);
 
+	bool GetIsAudioPlaying();
+
 	//いったん仮に死亡通知を受け取る関数
 	UFUNCTION()
 	void PlayerDeathLeastener();
@@ -135,7 +139,16 @@ protected:
 	TObjectPtr<UCameraComponent> Camera;
 
 	UPROPERTY(VisibleAnywhere, Category = "Sound")
+	TArray<TObjectPtr<UAudioComponent>> AudioArray;
+
+	UPROPERTY(VisibleAnywhere, Category = "Sound")
 	TObjectPtr<UAudioComponent> Audio;
+
+	UPROPERTY(VisibleAnywhere, Category = "Sound")
+	TObjectPtr<UAudioComponent> Audio2;
+
+	UPROPERTY(VisibleAnywhere, Category = "Sound")
+	TObjectPtr<UAudioComponent> Audio3;
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, Category = "Input")
@@ -202,5 +215,5 @@ protected:
 	float CrystalHealVal = 1.0f;
 
 private:
-	FTimerHandle SoundStopTimerHandle;
+	TArray<FTimerHandle> SoundStopTimerHandles;
 };
