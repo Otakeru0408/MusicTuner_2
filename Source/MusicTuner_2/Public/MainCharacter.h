@@ -104,6 +104,7 @@ protected:
 		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 	}
 	void EventOnAttack(const FInputActionValue& value);
+	void Tuning(const FInputActionValue& Value);
 
 	bool GetIsAudioPlaying();
 
@@ -170,6 +171,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> QuitAction;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> TuningAction;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UAnimMontage> AttackMontage;
 
@@ -189,6 +193,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TArray<int32> SoundIndexArray = { 52,55,60 };
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	int TuneDiff = 0;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	float SoundContinuousTime = 3.0f;

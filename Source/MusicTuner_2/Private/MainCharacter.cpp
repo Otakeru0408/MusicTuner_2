@@ -156,6 +156,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(DashFlag, ETriggerEvent::Completed, this, &AMainCharacter::SetMoveToWalk);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AMainCharacter::EventOnAttack);
 		EnhancedInputComponent->BindAction(QuitAction, ETriggerEvent::Started, this, &AMainCharacter::QuitGame);
+		EnhancedInputComponent->BindAction(TuningAction, ETriggerEvent::Started, this, &AMainCharacter::Tuning);
+
 	}
 }
 
@@ -261,6 +263,14 @@ void AMainCharacter::EventOnAttack(const FInputActionValue& value) {
 	isAttacking = true;		//攻撃モーション終了時に解除。これによって連続攻撃をさせない
 }
 
+//左右キーによって基音をチューニングする
+void AMainCharacter::Tuning(const FInputActionValue& Value) {
+	float input = Value.Get<float>();
+	TuneDiff += input > 0.0f ? 1 : -1;
+
+	Widget_HP->UpdateTuneDiffText(TuneDiff);
+}
+
 //CheckKickHitから呼び出される、攻撃時何かに当たった時のコンボ加算関数
 bool AMainCharacter::CheckHitCount() {
 	//MaxCombo=3回なので、3回目のコンボでまだ音が鳴ってるなら音の更新はしない
@@ -281,7 +291,7 @@ bool AMainCharacter::CheckHitCount() {
 
 void AMainCharacter::PlayHitSound() {
 	for (int i = 0; i <= ComboCount; i++) {
-		AudioArray[i]->SetIntParameter(FName("Sound_ID"), SoundIndexArray[i]);
+		AudioArray[i]->SetIntParameter(FName("Sound_ID"), SoundIndexArray[i] + TuneDiff);
 		AudioArray[i]->Play();
 		GetWorldTimerManager().SetTimer(SoundStopTimerHandles[i], [this, i]()
 			{

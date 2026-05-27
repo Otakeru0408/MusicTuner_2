@@ -28,6 +28,9 @@ public:
 	UFUNCTION()
 	void UpdateCrystalNum(int num);
 
+	UFUNCTION()
+	void UpdateTuneDiffText(int num);
+
 	UPROPERTY(meta = (BindWidget))
 	class UImage* HP_Bar = nullptr;
 
@@ -35,10 +38,13 @@ public:
 	class UImage* HP_LateBar = nullptr;
 
 	UPROPERTY(meta = (BindWidget))
-	class UEditableTextBox* HP_Text = nullptr;
+	class UTextBlock* HP_Text = nullptr;
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* CrystalText = nullptr;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* TuneDiff_Text = nullptr;
 
 	UPROPERTY()
 	FVector2D MaxBarSize;

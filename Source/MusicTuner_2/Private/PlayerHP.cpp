@@ -67,3 +67,7 @@ void UPlayerHP::UpdateHP(float HealthPercent, float HP) {
 void UPlayerHP::UpdateCrystalNum(int num) {
 	CrystalText->SetText(FText::Format(FText::FromString("Crystal : {0}"), num));
 }
+
+void UPlayerHP::UpdateTuneDiffText(int num) {
+	TuneDiff_Text->SetText(FText::Format(FText::FromString("TuneDiff : {0}"), num));
+}
