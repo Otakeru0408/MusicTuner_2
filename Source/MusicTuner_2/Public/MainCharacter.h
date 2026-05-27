@@ -70,7 +70,7 @@ public:
 	float GetDamageNum() { return DefaultDamageNum; }
 
 	UFUNCTION()
-	float GetNowDamageNum();
+	float GetNowDamageNum(int enemyPitch);
 
 	UFUNCTION()
 	void OnCrystalGained();
@@ -116,6 +116,23 @@ protected:
 	//実際に死亡処理を行う関数
 	UFUNCTION()
 	void OnPlayerDeath();
+
+	UPROPERTY(VisibleAnywhere, Category = "Sound")
+	float HarmonyTable[12] =
+	{
+		2.0f, // 0  同音（ユニゾン）
+		0.5f, // 1  短2度（強い不協和）
+		0.7f, // 2  長2度
+		1.6f, // 3  短3度（協和）
+		1.8f, // 4  長3度（強い協和）
+		1.5f, // 5  完全4度
+		0.5f, // 6  トライトーン（最も不協和）
+		2.0f, // 7  完全5度（最強協和）
+		1.6f, // 8  短6度
+		1.8f, // 9  長6度
+		0.7f, // 10 短7度
+		0.6f  // 11 長7度（不安定）
+	};
 
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	TSubclassOf<UPlayerHP> Widget_HP_Class;

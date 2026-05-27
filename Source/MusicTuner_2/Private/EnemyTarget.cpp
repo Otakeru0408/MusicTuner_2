@@ -115,7 +115,7 @@ bool AEnemyTarget::DamageToEnemy(int32 DamageValue, AActor* DamageCauser, bool I
 	if (player) {
 		UGameplayStatics::ApplyDamage(
 			Enemy_Owner,                 // ダメージを受けるアクター（この敵自身）
-			player->GetNowDamageNum(),   // ダメージ量
+			player->GetNowDamageNum(parentPitch),   // ダメージ量
 			player->GetController(), // ダメージを与えた人のコントローラー
 			DamageCauser,         // ダメージを引き起こしたアクター
 			UDamageType::StaticClass() // ダメージタイプ（基本はこれでOK）

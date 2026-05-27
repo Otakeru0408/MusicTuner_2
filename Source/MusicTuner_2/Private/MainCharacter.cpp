@@ -324,10 +324,21 @@ void AMainCharacter::StartCameraShake() {
 	}
 }
 
-float AMainCharacter::GetNowDamageNum() {
+float AMainCharacter::GetNowDamageNum(int enemyPitch) {
+	//EnemyTarget攻撃時にコンボに応じてダメージ数を増やす
 	int nowIndex = 0;
 	if (ComboCount < DamageNumByCombo.Num())nowIndex = ComboCount;
-	return DamageNumByCombo[nowIndex];
+
+	//自身のPitchと敵のPitchを比べ、ハモる場合はダメージの割合を増やす
+	//相手と自分の音程差を計算し、12の余りとする。
+	int Interval = abs(TuneDiff - enemyPitch) % 12;
+
+	//その音程差がどれだけハモるか取得
+	float Harmony = HarmonyTable[Interval];
+
+	UE_LOG(LogTemp, Display, TEXT("MyPitch:%d,EnemyPitch:%d, Harmony:%.2f"), TuneDiff, enemyPitch, Harmony);
+
+	return DamageNumByCombo[nowIndex] * Harmony;
 }
 
 void AMainCharacter::OnCrystalGained() {
