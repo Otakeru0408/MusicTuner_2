@@ -87,7 +87,7 @@ void AMainCharacter::BeginPlay()
 		if (Widget_HP) {
 			Widget_HP->AddToViewport();
 
-			Widget_HP->InitData(Health->GetMaxHP());
+			Widget_HP->InitData(Health->GetMaxHP(), TuneDiff);
 		}
 	}
 
@@ -157,6 +157,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AMainCharacter::EventOnAttack);
 		EnhancedInputComponent->BindAction(QuitAction, ETriggerEvent::Started, this, &AMainCharacter::QuitGame);
 		EnhancedInputComponent->BindAction(TuningAction, ETriggerEvent::Started, this, &AMainCharacter::Tuning);
+		EnhancedInputComponent->BindAction(TuningAction, ETriggerEvent::Completed, this, &AMainCharacter::FinishTuning);
 
 	}
 }
@@ -269,6 +270,14 @@ void AMainCharacter::Tuning(const FInputActionValue& Value) {
 	TuneDiff += input > 0.0f ? 1 : -1;
 
 	Widget_HP->UpdateTuneDiffText(TuneDiff);
+
+	AudioArray[0]->SetIntParameter(FName("Sound_ID"), SoundIndexArray[0] + TuneDiff);
+	AudioArray[0]->Play();
+}
+
+//左右キーを押してから話すまでずっとその音を鳴らす
+void AMainCharacter::FinishTuning(const FInputActionValue& Value) {
+	AudioArray[0]->SetTriggerParameter(FName("On Stop"));
 }
 
 //CheckKickHitから呼び出される、攻撃時何かに当たった時のコンボ加算関数

@@ -23,7 +23,7 @@ public:
 	void UpdateHP(float HealthPercent, float HP);
 
 	UFUNCTION()
-	void InitData(float maxHP);
+	void InitData(float maxHP, int tuneDiff);
 
 	UFUNCTION()
 	void UpdateCrystalNum(int num);

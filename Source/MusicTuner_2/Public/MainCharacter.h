@@ -105,6 +105,7 @@ protected:
 	}
 	void EventOnAttack(const FInputActionValue& value);
 	void Tuning(const FInputActionValue& Value);
+	void FinishTuning(const FInputActionValue& Value);
 
 	bool GetIsAudioPlaying();
 
@@ -192,10 +193,10 @@ protected:
 	float HP = 100.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
-	TArray<int32> SoundIndexArray = { 52,55,60 };
+	TArray<int32> SoundIndexArray = { 0,3,8 };
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
-	int TuneDiff = 0;
+	int TuneDiff = 52;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	float SoundContinuousTime = 3.0f;

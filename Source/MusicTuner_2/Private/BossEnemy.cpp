@@ -61,7 +61,7 @@ void ABossEnemy::BeginPlay() {
 		HPWidget->InitWidget();	//Widgetのインスタンスを作成する
 
 		WidgetData = Cast<UPlayerHP>(HPWidget->GetUserWidgetObject());
-		WidgetData->InitData(Health->GetMaxHP());
+		WidgetData->InitData(Health->GetMaxHP(), 52);		//
 	}
 
 

@@ -4,7 +4,7 @@
 #include "PlayerHP.h"
 
 
-void UPlayerHP::InitData(float maxHP) {
+void UPlayerHP::InitData(float maxHP, int tuneDiff) {
 	//まずは最大のWとHを取得する
 	if (HP_Bar)
 	{
@@ -32,6 +32,8 @@ void UPlayerHP::InitData(float maxHP) {
 
 		// 2. テキストをセット
 		HP_Text->SetText(HPFormattedText);
+
+		TuneDiff_Text->SetText(FText::Format(FText::FromString("TuneDiff : {0}"), tuneDiff));
 	}
 
 	if (CrystalText) {

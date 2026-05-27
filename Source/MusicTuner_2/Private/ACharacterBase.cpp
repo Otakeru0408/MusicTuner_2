@@ -71,7 +71,7 @@ void AACharacterBase::BeginPlay()
 	if (Widget_HP_Class) {
 		HPWidget->SetWidgetClass(Widget_HP_Class);
 		WidgetData = Cast<UPlayerHP>(HPWidget->GetUserWidgetObject());
-		WidgetData->InitData(Health->GetMaxHP());
+		WidgetData->InitData(Health->GetMaxHP(), 52);
 	}
 
 	//Œã‚Ì‚½‚ß‚ÉAIController‚ÆBlackboard‚ğ•Û‚µ‚Ä‚¨‚­
